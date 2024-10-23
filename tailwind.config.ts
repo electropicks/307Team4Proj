@@ -1,19 +1,19 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: '#FAF3E0', // Light beige
+        foreground: '#3A322D', // Darker brown
+        primary: '#D4A373', // Warm golden brown
+        secondary: '#A3B18A', // Soft earthy tone
+        accent: '#8C7B75', // Muted olive green
       },
     },
   },
   plugins: [],
 };
+
 export default config;
