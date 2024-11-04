@@ -1,3 +1,4 @@
+// eslint.config.mjs
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import prettier from 'eslint-plugin-prettier';
 import tsParser from '@typescript-eslint/parser';
@@ -15,6 +16,16 @@ const compat = new FlatCompat({
 });
 
 const config = [
+  {
+    ignores: [
+      '.next/**',
+      'build/**',
+      'dist/**',
+      'node_modules/**',
+      'coverage/**',
+      'storybook-static/**',
+    ],
+  },
   ...compat.extends(
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -22,32 +33,23 @@ const config = [
     'next/core-web-vitals',
   ),
   {
+    files: ['**/*.ts', '**/*.tsx'],
     plugins: {
       '@typescript-eslint': typescriptEslint,
       prettier,
     },
-
     languageOptions: {
       parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: process.cwd(),
+      },
     },
-
     rules: {
-      'prettier/prettier': [
-        'error',
-        {
-          singleQuote: true,
-          trailingComma: 'all',
-          bracketSpacing: true,
-          arrowParens: 'always',
-          printWidth: 80,
-        },
-      ],
-      quotes: ['error', 'single'],
+      'prettier/prettier': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
-      indent: ['error', 2],
-      'no-tabs': 'error',
-      semi: ['error', 'always'],
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
 ];

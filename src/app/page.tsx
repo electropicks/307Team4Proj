@@ -1,15 +1,55 @@
+'use client';
 import Link from 'next/link';
 import NavLink from '@/app/NavLink';
 import Feature from '@/app/Feature';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
+import { useEffect, useState } from 'react';
+import { User } from '@supabase/auth-js';
+import { Button, Group, Heading } from '@chakra-ui/react';
 
 export default function Home() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        console.log('User found:', data.session.user.email);
+        setUser(data.session.user);
+      }
+      router.push('/');
+    };
+    if (!user) {
+      void checkUser();
+    }
+  }, [router, supabase, user]);
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      setUser(null);
+      router.push('/');
+    } else console.error(error);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <nav className="flex items-center justify-between p-6 bg-secondary shadow-md">
         <div className="text-2xl font-bold text-accent">GreatReads</div>
         <div>
-          <NavLink href="/login">Log In</NavLink>
-          <NavLink href="/signup">Sign Up</NavLink>
+          {user ? (
+            <Group>
+              <Heading>
+                Logged in as {user.user_metadata['name'] ?? user.email}
+              </Heading>
+              <Button onClick={handleSignOut}>Sign Out</Button>
+            </Group>
+          ) : (
+            <NavLink href="/login">Log In</NavLink>
+          )}
         </div>
       </nav>
 
@@ -22,7 +62,7 @@ export default function Home() {
           GreatReads is a reading tracking app that offers a user-friendly way
           to organize and track books you have read or want to read.
         </p>
-        <Link href="/signup" className="text-primary hover:text-highlight">
+        <Link href="/login" className="text-primary hover:text-highlight">
           Get Started
         </Link>
       </main>
