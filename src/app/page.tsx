@@ -17,6 +17,7 @@ export default function Home() {
     const checkUser = async () => {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
+        console.log('User found:', data.session.user.email);
         setUser(data.session.user);
       }
       router.push('/');
