@@ -3,6 +3,7 @@ import './globals.css';
 import { ReactNode } from 'react';
 import Provider from './provider';
 import dotenv from 'dotenv';
+import NavBar from '@/components/common/NavBar';
 // Load environment variables
 dotenv.config();
 
@@ -10,7 +11,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Provider>{children}</Provider>
+        <Provider>
+          <NavBar />
+          {children}
+        </Provider>
       </body>
     </html>
   );
