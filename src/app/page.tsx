@@ -44,42 +44,43 @@ export default function Home() {
       <div className="w-full mt-4 flex justify-center">
         {isBooksLoading ? (
           <p>Loading...</p>
-        ) : books && books.length > 0 ? (
-          <table className="w-full max-w-2xl mt-4 table-auto border-collapse border border-accent text-center">
-            <thead>
-              <tr className="bg-secondary text-foreground">
-                <th className="border border-accent p-2">Thumbnail</th>
-                <th className="border border-accent p-2">Title</th>
-                <th className="border border-accent p-2">Publish Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {books.map((book) => (
-                <tr key={book.id} className="border-t border-accent">
-                  <td className="border border-accent p-2">
-                    {book.volumeInfo.imageLinks.thumbnail && (
-                      <img
-                        src={book.volumeInfo.imageLinks?.thumbnail}
-                        alt={`${book.volumeInfo.title} Thumbnail`}
-                        className="max-w-full h-auto mx-auto"
-                        style={{ maxHeight: '200px', width: 'auto' }}
-                      />
-                    )}
-                  </td>
-                  <td className="border border-accent p-2">
-                    {book.volumeInfo.title}
-                  </td>
-                  <td className="border border-accent p-2 no-wrap">
-                    {dayjs(book.volumeInfo.publishedDate).format(
-                      'MMMM D, YYYY',
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         ) : (
-          <p>No results found.</p>
+          books &&
+          books.length > 0 && (
+            <table className="w-full max-w-2xl mt-4 table-auto border-collapse border border-accent text-center">
+              <thead>
+                <tr className="bg-secondary text-foreground">
+                  <th className="border border-accent p-2">Thumbnail</th>
+                  <th className="border border-accent p-2">Title</th>
+                  <th className="border border-accent p-2">Publish Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {books.map((book) => (
+                  <tr key={book.id} className="border-t border-accent">
+                    <td className="border border-accent p-2">
+                      {book.volumeInfo.imageLinks.thumbnail && (
+                        <img
+                          src={book.volumeInfo.imageLinks?.thumbnail}
+                          alt={`${book.volumeInfo.title} Thumbnail`}
+                          className="max-w-full h-auto mx-auto"
+                          style={{ maxHeight: '200px', width: 'auto' }}
+                        />
+                      )}
+                    </td>
+                    <td className="border border-accent p-2">
+                      {book.volumeInfo.title}
+                    </td>
+                    <td className="border border-accent p-2 no-wrap">
+                      {dayjs(book.volumeInfo.publishedDate).format(
+                        'MMMM D, YYYY',
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )
         )}
       </div>
     </div>
