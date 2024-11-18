@@ -48,51 +48,27 @@ export default function Home() {
       <div className="w-full mt-4 flex justify-center">
         {isBooksLoading ? (
           <p>Loading...</p>
+        ) : books && books.length > 0 ? (
+          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-7 xl:gap-x-8">
+            {books.map((book) => (
+              <div key={book.id} className="group relative">
+                <div className="aspect-h-0.5 aspect-w-0.5 w-half overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-56">
+                  <img
+                    src={book.volumeInfo.imageLinks?.thumbnail}
+                    alt={`${book.volumeInfo.title} Thumbnail`}
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                  />
+                </div>
+                <div className="mt-2 text-center">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {book.volumeInfo.title}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          books &&
-          books.length > 0 && (
-            <table className="w-full max-w-2xl mt-4 table-auto border-collapse border border-accent text-center">
-              <thead>
-                <tr className="bg-secondary text-foreground">
-                  <th className="border border-accent p-2">Thumbnail</th>
-                  <th className="border border-accent p-2">Title</th>
-                  <th className="border border-accent p-2">Publish Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {books.map((book) => (
-                  <tr key={book.id} className="border-t border-accent">
-                    <td className="border border-accent p-2">
-                      {book.volumeInfo?.imageLinks?.thumbnail && (
-                        <Image
-                          src={book.volumeInfo.imageLinks?.thumbnail}
-                          alt={`${book.volumeInfo.title} BookThumbnail`}
-                          width={128}
-                          height={206}
-                          style={{ objectFit: 'contain' }}
-                          loading="lazy"
-                          className="max-w-full max-h-auto mx-auto rounded-lg"
-                          placeholder={'blur'}
-                          blurDataURL={
-                            book.volumeInfo.imageLinks.smallThumbnail ||
-                            MISSING_PLACEHOLDER_URL
-                          }
-                        />
-                      )}
-                    </td>
-                    <td className="border border-accent p-2">
-                      {book.volumeInfo.title}
-                    </td>
-                    <td className="border border-accent p-2 no-wrap">
-                      {dayjs(book.volumeInfo.publishedDate).format(
-                        'MMMM D, YYYY',
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )
+          <p>No results found.</p>
         )}
       </div>
     </div>
