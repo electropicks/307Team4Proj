@@ -103,13 +103,6 @@ export const useBooks = (book: string) => {
   return useQuery({
     queryKey: [BOOKS_QUERY_KEY, book],
     queryFn: () => getBooks(book),
-  });
-};
-
-export const usePrefetchBooks = () => {
-  return useQuery({
-    queryKey: [BOOKS_QUERY_KEY],
-    queryFn: () => getBooks(''),
-    enabled: false,
+    enabled: !!book, // Only enable the query if there is a search query
   });
 };
