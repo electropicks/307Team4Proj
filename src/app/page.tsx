@@ -7,6 +7,9 @@ import Image from 'next/image';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 
+const MISSING_PLACEHOLDER_URL =
+  'http://books.google.com/books/content?id=vhQ1AAAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api';
+
 const books1 = [
   {
     id: 1,
@@ -140,12 +143,20 @@ export default function Home() {
                 {books.map((book) => (
                   <tr key={book.id} className="border-t border-accent">
                     <td className="border border-accent p-2">
-                      {book.volumeInfo.imageLinks.thumbnail && (
+                      {book.volumeInfo?.imageLinks?.thumbnail && (
                         <Image
                           src={book.volumeInfo.imageLinks?.thumbnail}
-                          alt={`${book.volumeInfo.title} Thumbnail`}
-                          className="max-w-full h-auto mx-auto"
-                          style={{ maxHeight: '200px', width: 'auto' }}
+                          alt={`${book.volumeInfo.title} BookThumbnail`}
+                          width={128}
+                          height={206}
+                          style={{ objectFit: 'contain' }}
+                          loading="lazy"
+                          className="max-w-full max-h-auto mx-auto rounded-lg"
+                          placeholder={'blur'}
+                          blurDataURL={
+                            book.volumeInfo.imageLinks.smallThumbnail ||
+                            MISSING_PLACEHOLDER_URL
+                          }
                         />
                       )}
                     </td>
