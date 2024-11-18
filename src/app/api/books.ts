@@ -53,6 +53,7 @@ const BOOKS_QUERY_KEY = 'BOOKS';
 export const getBooks = async (queryString: string) => {
   if (!process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY) {
     console.error('Google Books API key is not set');
+    console.error('Google Books API key is not set');
     throw new Error('Google Books API key is not set');
   }
 
