@@ -3,6 +3,7 @@
 import { useBooks } from '@/app/api/books';
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import Image from 'next/image';
 import dayjs from 'dayjs';
 
 export default function Home() {
@@ -60,7 +61,7 @@ export default function Home() {
                   <tr key={book.id} className="border-t border-accent">
                     <td className="border border-accent p-2">
                       {book.volumeInfo.imageLinks.thumbnail && (
-                        <img
+                        <Image
                           src={book.volumeInfo.imageLinks?.thumbnail}
                           alt={`${book.volumeInfo.title} Thumbnail`}
                           className="max-w-full h-auto mx-auto"
