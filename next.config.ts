@@ -10,9 +10,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'books.google.com',
-        port: '',
         pathname: '/books/content/**',
       },
     ],
