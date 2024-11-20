@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-interface Book {
+export interface Book {
   kind: 'books#volume';
   id: string;
   selfLink: string;
@@ -50,7 +50,7 @@ export interface GetBooksResponse {
 }
 const BOOKS_QUERY_KEY = 'BOOKS';
 
-export const getBooks = async (queryString: string) => {
+export const searchBooks = async (queryString: string) => {
   if (!process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY) {
     console.error('Google Books API key is not set');
     throw new Error('Google Books API key is not set');
@@ -99,10 +99,26 @@ const resolveDuplicateIds = (books: Book[]) => {
   return Array.from(bookMap.values());
 };
 
+const getBook = async (bookId: string) => {
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes/${bookId}`,
+  );
+  const json = await response.json();
+  const book = json satisfies Book;
+  return book as Book;
+};
+
 export const useBooks = (book: string) => {
   return useQuery({
     queryKey: [BOOKS_QUERY_KEY, book],
-    queryFn: () => getBooks(book),
+    queryFn: () => searchBooks(book),
     enabled: !!book, // Only enable the query if there is a search query
+  });
+};
+
+export const useBook = (bookId: string) => {
+  return useQuery({
+    queryKey: [BOOKS_QUERY_KEY, bookId],
+    queryFn: () => getBook(bookId),
   });
 };
