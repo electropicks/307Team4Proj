@@ -15,10 +15,11 @@ interface BookImageProps {
 const BookImage = ({ book }: BookImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const imageLinks = book.volumeInfo.imageLinks;
-  const imageUrl =
+  const imageUrl = (
     imageLinks?.thumbnail ||
     imageLinks.smallThumbnail ||
-    MISSING_PLACEHOLDER_URL;
+    MISSING_PLACEHOLDER_URL
+  ).replace('http:', 'https:');
 
   const customLoader = ({ src }: { src: string }) => src;
 
