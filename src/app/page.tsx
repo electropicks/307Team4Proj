@@ -6,6 +6,7 @@ import { Search } from 'lucide-react';
 import dayjs from 'dayjs';
 import BookImage from '@/components/common/BookImage';
 import BookPopup from '@/components/popup';
+import ShelfButton from './ShelfButton';
 
 export default function Home() {
   const [searchInput, setSearchInput] = useState('');
@@ -35,6 +36,7 @@ export default function Home() {
   return (
     <div className="p-4 min-h-screen flex flex-col bg-background text-foreground items-center">
       <h1 className="bg-primary p-4 rounded-xl">Bookshelf</h1>
+      <ShelfButton />
       <div className="w-full max-w-sm min-w-[200px]">
         <form onSubmit={handleFormSubmit} className="flex p-4">
           <input
