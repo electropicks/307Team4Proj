@@ -11,7 +11,6 @@ import Shelf from '../components/ui/Bookshelf';
 const MISSING_PLACEHOLDER_URL =
   'http://books.google.com/books/content?id=vhQ1AAAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api';
 
-
 const books2 = [
   {
     id: 1,
@@ -118,14 +117,11 @@ export default function Home() {
           )
         )}
       </div>
-      <div>
-
-        <Shelf/>
-        <Shelf/>
-        <Shelf/>
-        <Shelf/>
-
-
+      <div> 
+        <Shelf />
+        <Shelf />
+        <Shelf />
+        <Shelf />
       </div>
     </div>
   );

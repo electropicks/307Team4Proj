@@ -9,6 +9,7 @@ const config = defineConfig({
         background: { value: '#FAF3E0' },
         foreground: { value: '#3A322D' },
         accent: { value: '#8C7B75' },
+        darkPrimary: { value: '#030201' },
       },
       fonts: {
         body: { value: 'system-ui, sans-serif' },
