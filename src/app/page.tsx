@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 import dayjs from 'dayjs';
 import BookImage from '@/components/common/BookImage';
 import BookPopup from '@/components/popup';
-import ShelfButton from './ShelfButton';
+import ShelfButton from '@/components/ShelfButton';
 
 export default function Home() {
   const [searchInput, setSearchInput] = useState('');
