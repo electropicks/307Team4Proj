@@ -12,6 +12,7 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState('');
   const [bookSearch, setBookSearch] = useState('');
   const [selectedBook, setSelectedBook] = useState<Book | undefined>();
+  const [hasSearched, setHasSearched] = useState(false); // Tracks if the user has searched
   const { data: books, isLoading: isBooksLoading } = useBooks(bookSearch);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,16 +20,18 @@ export default function Home() {
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevents the default form submission behavior (page reload)
+    event.preventDefault();
     if (searchInput.trim() === '') {
       return;
     }
     setBookSearch(searchInput);
+    setHasSearched(true); // Set the search flag to true after searching
   };
 
   const handleBookClick = (book: Book) => {
     setSelectedBook(book);
   };
+
   const handleExitPopup = () => {
     setSelectedBook(undefined);
   };
@@ -56,41 +59,49 @@ export default function Home() {
       <div className="w-full mt-4 flex justify-center">
         {isBooksLoading ? (
           <p>Loading...</p>
-        ) : (
-          books &&
-          books.length > 0 && (
-            <table className="w-full max-w-2xl mt-4 table-auto border-collapse border border-accent text-center">
-              <thead>
-                <tr className="bg-secondary text-foreground">
-                  <th className="border border-accent p-2">Thumbnail</th>
-                  <th className="border border-accent p-2">Title</th>
-                  <th className="border border-accent p-2">Publish Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {books.map((book) => (
-                  <tr key={book.id} className="border-t border-accent">
-                    <td className="border border-accent p-2">
-                      <button onClick={() => handleBookClick(book)}>
-                        {book.volumeInfo?.imageLinks?.thumbnail && (
-                          <div className="relative w-24 h-32 mx-auto">
-                            <BookImage book={book} />
-                          </div>
-                        )}
-                      </button>
-                    </td>
-                    <td className="border border-accent p-2">
-                      {book.volumeInfo.title}
-                    </td>
-                    <td className="border border-accent p-2 no-wrap">
+        ) : books && books.length > 0 ? (
+          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 xl:gap-x-8">
+            {books.map((book) => (
+              <div key={book.id}>
+                <div className="aspect-w-3 aspect-h-4 overflow-hidden bg-gray-200">
+                  {book.volumeInfo?.imageLinks?.thumbnail ? (
+                    <img
+                      src={book.volumeInfo.imageLinks.thumbnail}
+                      alt={`${book.volumeInfo.title} Thumbnail`}
+                      className="h-full w-full object-cover object-center"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-gray-300 text-gray-500">
+                      No Image
+                    </div>
+                  )}
+                </div>
+                <div className="mt-2 text-center">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {book.volumeInfo.title}
+                  </p>
+                  {book.volumeInfo.publishedDate && (
+                    <p className="text-xs text-gray-600">
                       {dayjs(book.volumeInfo.publishedDate).format(
                         'MMMM D, YYYY',
                       )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </p>
+                  )}
+                  <button
+                    onClick={() => handleBookClick(book)}
+                    className="mt-2 text-sm bg-primary text-foreground rounded-lg px-3 py-1 hover:bg-primary-dark"
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          hasSearched && (
+            <p className="text-gray-500 mt-4">
+              No results found. Try another search.
+            </p>
           )
         )}
       </div>
