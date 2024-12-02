@@ -25,13 +25,13 @@ export default function ShelfButton() {
             htmlFor="shelfName"
             className="block text-lg text-gray-700 mb-2"
           >
-            Name Your Book shelf
+            Name Your Bookshelf
           </label>
           <input
             id="shelfName"
             name="shelfName"
             type="text"
-            placeholder="ex. fun reading"
+            placeholder="My TBR"
             className="py-2 px-4 border border-gray-300"
           />
           <button
