@@ -10,6 +10,8 @@ const config: Config = {
         primary: '#D4A373', // Warm golden brown
         secondary: '#A3B18A', // Soft earthy tone
         accent: '#8C7B75', // Muted olive green
+        darkPrimary: '#b38960', 
+        darkForeground: '#2c2621' 
       },
     },
   },
