@@ -26,7 +26,7 @@ export default function BookPopup({
     console.error(`Book with id: ${selectedBookId} not found`);
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-500/75">
-        <div className="bg-white p-4 rounded shadow-lg">Book not found</div>
+        <div className="bg-background p-4 rounded shadow-lg">Book not found</div>
       </div>
     );
   }
@@ -37,7 +37,7 @@ export default function BookPopup({
       role="dialog"
       aria-modal="true"
     >
-      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-background rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           type="button"
@@ -63,25 +63,25 @@ export default function BookPopup({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Book Image */}
           <div className="md:col-span-4 flex justify-center">
-            <div className="relative w-40 h-60  border border-accent rounded-lg shadow-sm">
+            <div className="relative w-48 h-72 border border-accent rounded-lg shadow-sm">
               <BookImage book={book} />
             </div>
           </div>
 
           {/* Book Details */}
           <div className="md:col-span-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-foreground">
               {book.volumeInfo.title || 'No title available'}
             </h2>
 
-            <p className="mt-2 text-lg text-gray-700">
+            <p className="mt-2 text-lg text-foreground">
               {book.volumeInfo.authors?.join(', ') || 'No author available'}
             </p>
 
             <section className="mt-4">
-              <h3 className="font-semibold text-gray-800">Description</h3>
+              <h3 className="font-semibold text-foreground">Description</h3>
               <div
-                className="text-gray-600 max-h-72 overflow-y-auto"
+                className="text-foreground max-h-72 overflow-y-auto"
                 dangerouslySetInnerHTML={{
                   __html:
                     book.volumeInfo.description || 'No description available.',
@@ -93,13 +93,13 @@ export default function BookPopup({
             <div className="mt-6 flex items-center space-x-4">
               <button
                 type="button"
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                className="px-4 py-2 bg-foreground text-white rounded hover:bg-darkForeground focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               >
                 Mark as Unread
               </button>
               <button
                 type="button"
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none"
+                className="px-4 py-2 bg-primary text-gray-800 rounded hover:bg-darkPrimary focus:ring-2 focus:ring-gray-300 focus:outline-none"
               >
                 Edit Notes
               </button>
@@ -107,8 +107,8 @@ export default function BookPopup({
 
             {/* User Notes */}
             <section className="mt-6">
-              <h3 className="font-semibold text-gray-800">My Notes</h3>
-              <p className="mt-2 text-gray-600">I want to read this book!!!</p>
+              <h3 className="font-semibold text-foreground">My Notes</h3>
+              <p className="mt-2 text-foreground">I want to read this book!!!</p>
             </section>
           </div>
         </div>
