@@ -2,6 +2,7 @@
 
 import { useBook } from '@/app/api/books';
 import BookImage from '@/components/common/BookImage';
+import AddToShelfPopup from '@/components/AddToShelfPopup';
 
 interface BookPopupProps {
   selectedBookId: string;
@@ -37,6 +38,7 @@ export default function BookPopup({
       role="dialog"
       aria-modal="true"
     >
+
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
@@ -102,6 +104,14 @@ export default function BookPopup({
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none"
               >
                 Edit Notes
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none"
+              >
+               Add to Shelf
+                {/*  <AddToShelfPopup/> */}
+              
               </button>
             </div>
 
