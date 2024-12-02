@@ -27,7 +27,9 @@ export default function BookPopup({
     console.error(`Book with id: ${selectedBookId} not found`);
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-500/75">
-        <div className="bg-background p-4 rounded shadow-lg">Book not found</div>
+        <div className="bg-background p-4 rounded shadow-lg">
+          Book not found
+        </div>
       </div>
     );
   }
@@ -116,7 +118,9 @@ export default function BookPopup({
             {/* User Notes */}
             <section className="mt-6">
               <h3 className="font-semibold text-foreground">My Notes</h3>
-              <p className="mt-2 text-foreground">I want to read this book!!!</p>
+              <p className="mt-2 text-foreground">
+                I want to read this book!!!
+              </p>
             </section>
           </div>
         </div>
