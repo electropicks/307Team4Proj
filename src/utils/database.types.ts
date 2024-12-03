@@ -211,7 +211,7 @@ export type Database = {
       };
       user_book: {
         Row: {
-          book_id: number;
+          google_book_id: number;
           created_at: string | null;
           finished_date: string | null;
           id: number;
@@ -222,7 +222,7 @@ export type Database = {
           user_id: string;
         };
         Insert: {
-          book_id: number;
+          google_book_id: number;
           created_at?: string | null;
           finished_date?: string | null;
           id?: number;
@@ -233,7 +233,7 @@ export type Database = {
           user_id: string;
         };
         Update: {
-          book_id?: number;
+          google_book_id?: number;
           created_at?: string | null;
           finished_date?: string | null;
           id?: number;
