@@ -231,7 +231,7 @@ export const updateReadStatus = async (
   }
 };
 
-// update note for a specific book for the current user TEST
+// update note for a specific book for the current user
 export const updateNote = async (
   googleBookId: string,
   note: string,
@@ -262,7 +262,7 @@ export const updateNote = async (
   }
 };
 
-// update rating for a specific book for the current user TEST
+// update rating for a specific book for the current user
 export const updateRating = async (
   googleBookId: string,
   rating: number,
@@ -296,6 +296,112 @@ export const updateRating = async (
   } catch (error) {
     console.error('Unexpected error in updateRating:', error);
     return false;
+  }
+};
+
+// update started_date for a specific book for the current user
+// will not perform update and output a console error message if not in 'YYYY-MM-DD' format
+export const updateStartDate = async (
+  googleBookId: string,
+  startDate: string, // expected in 'YYYY-MM-DD' format
+): Promise<boolean> => {
+  try {
+    // checks if the user already has a relation to this book, if not it will create one
+    const ensured = await ensureUserBookExists(googleBookId);
+    if (!ensured) {
+      return false; // if ensuring the row exists failed, abort the update
+    }
+
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+
+    const { error } = await supabase
+      .from('user_book')
+      .update({ started_date: startDate })
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId);
+
+    if (error) {
+      console.error('Error updating start date:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Unexpected error in updateStartDate:', error);
+    return false;
+  }
+};
+
+// update finished_date for a specific book for the current user
+// will not perform update and output a console error message if not in 'YYYY-MM-DD' format
+export const updateFinishedDate = async (
+  googleBookId: string,
+  finishedDate: string, // expected in 'YYYY-MM-DD' format
+): Promise<boolean> => {
+  try {
+    // checks if the user already has a relation to this book, if not it will create one
+    const ensured = await ensureUserBookExists(googleBookId);
+    if (!ensured) {
+      return false; // if ensuring the row exists failed, abort the update
+    }
+
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+
+    const { error } = await supabase
+      .from('user_book')
+      .update({ finished_date: finishedDate })
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId);
+
+    if (error) {
+      console.error('Error updating finished date:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Unexpected error in updateFinishedDate:', error);
+    return false;
+  }
+};
+
+// fetch read_status, rating, note, start_date and finished_date for a specific book for the current user
+// returns null value in promise and error to console if non-existent
+export const getUserBookDetails = async (
+  googleBookId: string,
+): Promise<{
+  read_status: string | null;
+  rating: number | null;
+  note: string | null;
+  start_date: string | null;
+  finished_date: string | null;
+} | null> => {
+  try {
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+
+    const { data, error } = await supabase
+      .from('user_book')
+      .select('read_status, rating, note, started_date, finished_date')
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching book details:', error);
+      return null;
+    }
+
+    return {
+      read_status: data.read_status,
+      rating: data.rating,
+      note: data.note,
+      start_date: data.started_date,
+      finished_date: data.finished_date,
+    };
+  } catch (error) {
+    console.error('Unexpected error in getUserBookDetails:', error);
+    return null;
   }
 };
 
@@ -340,45 +446,6 @@ export const ensureUserBookExists = async (
   } catch (error) {
     console.error('Unexpected error in ensureUserBookExists:', error);
     return false;
-  }
-};
-
-// fetch read_status, rating, note, start_date and finished_date for a specific book for the current user TEST
-export const getUserBookDetails = async (
-  googleBookId: string,
-): Promise<{
-  read_status: string | null;
-  rating: number | null;
-  note: string | null;
-  start_date: string | null;
-  finished_date: string | null;
-} | null> => {
-  try {
-    const supabase = createClient();
-    const currentUserId = await getUserId();
-
-    const { data, error } = await supabase
-      .from('user_book')
-      .select('read_status, rating, note, started_date, finished_date')
-      .eq('user_id', currentUserId)
-      .eq('google_book_id', googleBookId)
-      .single();
-
-    if (error) {
-      console.error('Error fetching book details:', error);
-      return null;
-    }
-
-    return {
-      read_status: data.read_status,
-      rating: data.rating,
-      note: data.note,
-      start_date: data.started_date,
-      finished_date: data.finished_date,
-    };
-  } catch (error) {
-    console.error('Unexpected error in getUserBookDetails:', error);
-    return null;
   }
 };
 

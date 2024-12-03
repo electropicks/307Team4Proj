@@ -9,6 +9,11 @@ import {
   removeBookFromBookshelf,
   updateBookshelfName,
   updateReadStatus,
+  getUserBookDetails,
+  updateNote,
+  updateRating,
+  updateFinishedDate,
+  updateStartDate,
 } from './api/supabase'; //
 
 import { Book, useBooks } from '@/app/api/books';
@@ -32,7 +37,9 @@ export default function Home() {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // console.log(getUserBookshelves());
-    console.log(updateReadStatus('jVZoAAAAQBAJ', 'reading'));
+    // console.log(updateReadStatus('jVZoAAAAQBAJ', 'reading'));
+    console.log(getUserBookDetails('jVZoAAAAQBAJ'));
+    console.log(updateStartDate('jVZoAAAAQBAJ', '2024-12-22'));
     // console.log(deleteBookshelf(24));
     // console.log(removeBookFromBookshelf(17, 'RlTCDwAAQBAJ'));
     // console.log(updateBookshelfName(22, 'A Bookshelf Name 1'));
