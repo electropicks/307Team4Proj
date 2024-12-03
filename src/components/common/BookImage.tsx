@@ -14,12 +14,12 @@ interface BookImageProps {
 
 const BookImage = ({ book }: BookImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const imageLinks = book.volumeInfo.imageLinks;
+  const imageLinks = book.volumeInfo.imageLinks || {};
   const imageUrl = (
-    imageLinks?.thumbnail ||
+    imageLinks.thumbnail ||
     imageLinks.smallThumbnail ||
     MISSING_PLACEHOLDER_URL
-  ).replace('http:', 'https:');
+  ).replace('http:', 'https:'); // Use secure HTTPS
 
   const customLoader = ({ src }: { src: string }) => src;
 
@@ -36,7 +36,7 @@ const BookImage = ({ book }: BookImageProps) => {
         fill
         priority
         loader={customLoader}
-        className={`object-cover rounded-lg transition-opacity  duration-500 ${
+        className={`object-cover rounded-lg transition-opacity duration-500 ${
           isLoading ? 'opacity-0' : 'opacity-100'
         }`}
         onLoadingComplete={() => setIsLoading(false)}
