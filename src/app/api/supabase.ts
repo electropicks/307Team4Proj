@@ -1,6 +1,8 @@
 import { createClient } from '@/utils/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-// import { Book, useBook } from '@/app/api/books';
+import { Database } from '@/utils/database.types';
+
+type ReadStatus = Database['public']['Enums']['ReadStatus'];
 
 // utility function to get the current user ID
 const getUserId = async (): Promise<string> => {
@@ -203,7 +205,7 @@ export const removeBookFromBookshelf = async (
 // update read_status for a specific book for the current user
 export const updateReadStatus = async (
   googleBookId: string,
-  readStatus: 'want_to_read' | 'reading' | 'read',
+  readStatus: ReadStatus,
 ): Promise<boolean> => {
   try {
     // checks if the user already has a relation to this book, if not it will create one
@@ -422,21 +424,25 @@ export const ensureUserBookExists = async (
       .eq('google_book_id', googleBookId)
       .single();
 
-    // PGRST116 is the PostgREST error code for "No matching rows found"
-    if (selectError && selectError.code !== 'PGRST116') {
-      console.error('Error checking user_book existence:', selectError);
+    if (selectError) {
+      console.error(
+        'Error checking user_book existence:',
+        selectError.message,
+        selectError.details,
+      );
       return false;
     }
 
     if (existingEntry) {
-      return true; // the entry exists, can exit with true response
+      // the entry exists, can exit with true response
+      return true;
     }
 
     // otherwise insert the row since it doesn't exist
     const { error: insertError } = await supabase
       .from('user_book')
-      .insert([{ user_id: currentUserId, google_book_id: googleBookId }]); // changed book_id to google_book_id in both DB and in database.types.ts but still underlined red
-    // the insert works but its underlined red and a GET error shows in browser console (caused by only the inserting here)
+      .insert([{ user_id: currentUserId, google_book_id: googleBookId }]);
+
     if (insertError) {
       console.error('Error inserting user_book entry:', insertError);
       return false;
@@ -531,7 +537,7 @@ export const useUpdateReadStatus = () => {
       readStatus,
     }: {
       googleBookId: string;
-      readStatus: 'true' | 'false';
+      readStatus: ReadStatus;
     }) => updateReadStatus(googleBookId, readStatus),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['userBooks'] });
@@ -561,7 +567,6 @@ export const useUpdateNote = () => {
   });
 };
 
-// React Query hook for updating a rating
 export const useUpdateRating = () => {
   const queryClient = useQueryClient();
 
@@ -584,7 +589,7 @@ export const useUpdateRating = () => {
   });
 };
 
-// // error on this one
+// // error on the hooks below
 // export const useUserBookDetails = (googleBookId: string) => {
 //   return useQuery({
 //     queryKey: ['bookDetails', googleBookId],
@@ -596,6 +601,21 @@ export const useUpdateRating = () => {
 //   });
 // };
 
+// export const useUpdateStartDate = () => {
+//   return useMutation({
+//     mutationKey: ['updateStartDate'],
+//     mutationFn: updateStartDate,
+//   });
+// };
+
+// export const useUpdateFinishedDate = () => {
+//   return useMutation({
+//     mutationKey: ['updateFinishedDate'],
+//     mutationFn: updateFinishedDate,
+//   });
+// };
+
+// need help on this function, want to return the books retrieved from database as Google IDs as Book objects with book info
 
 // // get all books for a specified bookshelf as book objects
 // export const getBookObjectsForBookshelf = async (

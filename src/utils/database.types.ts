@@ -9,90 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      author: {
-        Row: {
-          author_id: number;
-          author_name: string;
-          created_at: string;
-        };
-        Insert: {
-          author_id?: number;
-          author_name: string;
-          created_at?: string;
-        };
-        Update: {
-          author_id?: number;
-          author_name?: string;
-          created_at?: string;
-        };
-        Relationships: [];
-      };
-      author_book: {
-        Row: {
-          author_id: number;
-          book_id: number;
-          created_at: string;
-          id: number;
-        };
-        Insert: {
-          author_id: number;
-          book_id: number;
-          created_at?: string;
-          id?: number;
-        };
-        Update: {
-          author_id?: number;
-          book_id?: number;
-          created_at?: string;
-          id?: number;
-        };
-        Relationships: [];
-      };
-      book: {
-        Row: {
-          book_id: number;
-          created_at: string | null;
-          google_books_id: string;
-          title: string | null;
-        };
-        Insert: {
-          book_id?: number;
-          created_at?: string | null;
-          google_books_id: string;
-          title?: string | null;
-        };
-        Update: {
-          book_id?: number;
-          created_at?: string | null;
-          google_books_id?: string;
-          title?: string | null;
-        };
-        Relationships: [];
-      };
-      book_deprecated: {
-        Row: {
-          book_id: number;
-          cover_url: string | null;
-          created_at: string | null;
-          page_count: number | null;
-          title: string;
-        };
-        Insert: {
-          book_id?: number;
-          cover_url?: string | null;
-          created_at?: string | null;
-          page_count?: number | null;
-          title: string;
-        };
-        Update: {
-          book_id?: number;
-          cover_url?: string | null;
-          created_at?: string | null;
-          page_count?: number | null;
-          title?: string;
-        };
-        Relationships: [];
-      };
       bookshelf: {
         Row: {
           bookshelf_id: number;
@@ -133,52 +49,13 @@ export type Database = {
           google_book_id?: string;
           id?: number;
         };
-        Relationships: [];
-      };
-      genre: {
-        Row: {
-          created_at: string;
-          genre_id: number;
-          genre_name: string;
-        };
-        Insert: {
-          created_at?: string;
-          genre_id?: number;
-          genre_name: string;
-        };
-        Update: {
-          created_at?: string;
-          genre_id?: number;
-          genre_name?: string;
-        };
-        Relationships: [];
-      };
-      genre_book: {
-        Row: {
-          book_id: number;
-          created_at: string;
-          genre_id: number;
-          id: number;
-        };
-        Insert: {
-          book_id: number;
-          created_at?: string;
-          genre_id: number;
-          id?: number;
-        };
-        Update: {
-          book_id?: number;
-          created_at?: string;
-          genre_id?: number;
-          id?: number;
-        };
         Relationships: [
           {
-            foreignKeyName: 'genre_book_genre_id_fkey';
-            columns: ['genre_id'];
+            foreignKeyName: 'bookshelf_book_bookshelf_id_fkey';
+            columns: ['bookshelf_id'];
             isOneToOne: false;
-            referencedRelation: 'genre';
-            referencedColumns: ['genre_id'];
+            referencedRelation: 'bookshelf';
+            referencedColumns: ['bookshelf_id'];
           },
         ];
       };
@@ -211,39 +88,143 @@ export type Database = {
       };
       user_book: {
         Row: {
-          google_book_id: number;
           created_at: string | null;
           finished_date: string | null;
-          id: number;
+          google_book_id: string;
           note: string | null;
           rating: number | null;
-          read_status: string | null;
+          read_status: Database['public']['Enums']['ReadStatus'];
           started_date: string | null;
           user_id: string;
         };
         Insert: {
-          google_book_id: number;
           created_at?: string | null;
           finished_date?: string | null;
-          id?: number;
+          google_book_id: string;
           note?: string | null;
           rating?: number | null;
-          read_status?: string | null;
+          read_status?: Database['public']['Enums']['ReadStatus'];
           started_date?: string | null;
           user_id: string;
         };
         Update: {
-          google_book_id?: number;
           created_at?: string | null;
           finished_date?: string | null;
-          id?: number;
+          google_book_id?: string;
           note?: string | null;
           rating?: number | null;
-          read_status?: string | null;
+          read_status?: Database['public']['Enums']['ReadStatus'];
           started_date?: string | null;
           user_id?: string;
         };
         Relationships: [];
+      };
+      z_author: {
+        Row: {
+          author_id: number;
+          author_name: string;
+          created_at: string;
+        };
+        Insert: {
+          author_id?: number;
+          author_name: string;
+          created_at?: string;
+        };
+        Update: {
+          author_id?: number;
+          author_name?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      z_author_book: {
+        Row: {
+          author_id: number;
+          book_id: number;
+          created_at: string;
+          id: number;
+        };
+        Insert: {
+          author_id: number;
+          book_id: number;
+          created_at?: string;
+          id?: number;
+        };
+        Update: {
+          author_id?: number;
+          book_id?: number;
+          created_at?: string;
+          id?: number;
+        };
+        Relationships: [];
+      };
+      z_book: {
+        Row: {
+          book_id: number;
+          created_at: string | null;
+          google_books_id: string;
+          title: string | null;
+        };
+        Insert: {
+          book_id?: number;
+          created_at?: string | null;
+          google_books_id: string;
+          title?: string | null;
+        };
+        Update: {
+          book_id?: number;
+          created_at?: string | null;
+          google_books_id?: string;
+          title?: string | null;
+        };
+        Relationships: [];
+      };
+      z_genre: {
+        Row: {
+          created_at: string;
+          genre_id: number;
+          genre_name: string;
+        };
+        Insert: {
+          created_at?: string;
+          genre_id?: number;
+          genre_name: string;
+        };
+        Update: {
+          created_at?: string;
+          genre_id?: number;
+          genre_name?: string;
+        };
+        Relationships: [];
+      };
+      z_genre_book: {
+        Row: {
+          book_id: number;
+          created_at: string;
+          genre_id: number;
+          id: number;
+        };
+        Insert: {
+          book_id: number;
+          created_at?: string;
+          genre_id: number;
+          id?: number;
+        };
+        Update: {
+          book_id?: number;
+          created_at?: string;
+          genre_id?: number;
+          id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'genre_book_genre_id_fkey';
+            columns: ['genre_id'];
+            isOneToOne: false;
+            referencedRelation: 'z_genre';
+            referencedColumns: ['genre_id'];
+          },
+        ];
       };
     };
     Views: {
@@ -253,7 +234,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      ReadStatus: 'WANT_TO_READ' | 'READING' | 'READ' | 'UNREAD';
     };
     CompositeTypes: {
       [_ in never]: never;
