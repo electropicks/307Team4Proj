@@ -1,5 +1,16 @@
 'use client';
 
+import {
+  getUserBookshelves,
+  addBookshelf,
+  getBookIdsForBookshelf,
+  addBookToBookshelf,
+  deleteBookshelf,
+  removeBookFromBookshelf,
+  updateBookshelfName,
+  updateReadStatus,
+} from './api/supabase'; //
+
 import { Book, useBooks } from '@/app/api/books';
 import { useState } from 'react';
 import { Search } from 'lucide-react';
@@ -20,6 +31,16 @@ export default function Home() {
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // console.log(getUserBookshelves());
+    console.log(updateReadStatus('jVZoAAAAQBAJ', 'reading'));
+    // console.log(deleteBookshelf(24));
+    // console.log(removeBookFromBookshelf(17, 'RlTCDwAAQBAJ'));
+    // console.log(updateBookshelfName(22, 'A Bookshelf Name 1'));
+    // console.log(addBookshelf('A Bookshelf Name 3'));
+    // addBookToBookshelf(24, 'GGqTEAAAQBAJ');
+    // addBookToBookshelf(17, 'jVZoAAAAQBAJ');
+    // addBookToBookshelf(17, 'RlTCDwAAQBAJ');
+    // console.log(getBookIdsForBookshelf(18));
     event.preventDefault();
     if (searchInput.trim() === '') {
       return;
@@ -29,6 +50,7 @@ export default function Home() {
   };
 
   const handleBookClick = (book: Book) => {
+    console.log(book.id); //
     setSelectedBook(book);
   };
 
