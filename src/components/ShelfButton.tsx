@@ -1,14 +1,14 @@
 'use client';
 import { useState } from 'react';
 import Form from 'next/form';
-import { useAddBookshelf, useBookshelves } from '@/app/api/supabase';
+import { useCreateBookshelf, useUserBookshelves } from '@/app/api/supabase';
 
 export default function ShelfButton() {
   const [isFormVisible, setFormVisible] = useState<boolean>(false);
 
-  const { mutate: addBookshelf } = useAddBookshelf();
-  const { data: bookshelves, isLoading: isBookshelvesLoading } =
-    useBookshelves();
+  const { mutate: addBookshelf } = useCreateBookshelf();
+  const { data: bookshelves, isLoading: areBookshelvesLoading } =
+    useUserBookshelves();
 
   async function handleShelfSubmit(formData: FormData) {
     const newBookshelfName = formData.get('shelfName') as string;
@@ -56,7 +56,7 @@ export default function ShelfButton() {
       )}
 
       <div className="mt-6">
-        {isBookshelvesLoading ? (
+        {areBookshelvesLoading ? (
           <p className="text-center text-gray-500">
             Loading your bookshelves...
           </p>
