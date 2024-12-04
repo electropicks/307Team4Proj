@@ -42,7 +42,7 @@ export default function Home() {
                       href="/popup"
                       className="text-primary hover:text-highlight"
                     >
-                      <button className="bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-full">
+                      <button className="bg-primary hover:bg-darkPrimary text-background py-2 px-4 rounded-full">
                         &#8678;
                       </button>
                       <h2 className="text-2xl font-bold text-foreground sm:pr-12">
