@@ -2,11 +2,13 @@
 import { useState } from 'react';
 import Form from 'next/form';
 import { useCreateBookshelf, useUserBookshelves } from '@/app/api/supabase';
+import Image from 'next/image';
 
 export default function ShelfButton() {
   const [isFormVisible, setFormVisible] = useState<boolean>(false);
 
   const { mutate: addBookshelf } = useCreateBookshelf();
+  const [isButtonVisible, setButtonVisible] = useState<boolean>(true);
   const { data: bookshelves, isLoading: areBookshelvesLoading } =
     useUserBookshelves();
 
@@ -17,34 +19,40 @@ export default function ShelfButton() {
       return;
     }
     addBookshelf(newBookshelfName, {});
+    setButtonVisible(true);
   }
 
   return (
-    <div className="max-w-lg mx-auto p-4">
-      <button
-        onClick={() => setFormVisible((prev) => !prev)}
-        className="bg-primary text-white p-4 rounded-xl hover:bg-primary-dark transition-colors"
-      >
-        {isFormVisible ? 'Cancel' : 'Create a new Bookshelf'}
-      </button>
-
-      {isFormVisible && (
-        <Form
-          action={handleShelfSubmit}
-          className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md"
+    <div className="flex mr-5 ml-auto">
+      {isButtonVisible && (
+        <button
+          onClick={() => {
+            setFormVisible((prev) => !prev);
+            setButtonVisible((prev) => !prev);
+          }}
+          className="bg-primary p-1 rounded-xl w-14 h-10 m-auto flex"
         >
+          <Image
+            src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
+            alt="search button"
+            width={30}
+            height={30}
+          />
+          <p className="text-xl">+</p>
+        </button>
+      )}
+      {isFormVisible && (
+        <Form action={handleShelfSubmit} className=" rounded-lg flex m-auto">
           <label
             htmlFor="shelfName"
-            className="block text-lg font-medium text-gray-700 mb-2"
-          >
-            Name Your Bookshelf
-          </label>
+            className="block text-lg text-gray-700 mb-2"
+          ></label>
           <input
             id="shelfName"
             name="shelfName"
             type="text"
-            placeholder="e.g., Fun Reading"
-            className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            placeholder="Name your Bookshelf"
+            className="rounded-2xl bg-secondary placeholder:text-accent w-96 p-2"
           />
           <button
             type="submit"

@@ -37,24 +37,23 @@ export default function Home() {
   };
 
   return (
-    <div className="p-4 min-h-screen flex flex-col bg-background text-foreground items-center">
-      <h1 className="bg-primary p-4 rounded-xl">Bookshelf</h1>
-      <ShelfButton />
-      <div className="w-full max-w-sm min-w-[200px]">
-        <form onSubmit={handleSearchSubmit} className="flex p-4">
+    <div className="p-4 min-h-screen flex flex-col bg-background text-foreground w-screen">
+      <div className="w-auto flex">
+        <form onSubmit={handleFormSubmit} className="flex p-4 w-2/5">
           <input
-            className="bg-secondary w-full text-foreground rounded-2xl p-2 focus:outline-neutral-none placeholder:text-accent"
+            className="bg-secondary text-foreground rounded-2xl p-2 focus:outline-neutral-none placeholder:text-accent w-full my-auto"
             placeholder="Search for books..."
             value={searchInput}
             onChange={handleSearchInputChange}
           />
           <button
             type="submit"
-            className="ml-2 p-2 bg-primary text-foreground rounded-2xl"
+            className="ml-3 mr-3 p-2 bg-primary text-foreground rounded-2xl h-10 my-auto"
           >
             <Search />
           </button>
         </form>
+        <ShelfButton />
       </div>
       <div className="w-full mt-4 flex justify-center">
         {isBooksLoading ? (
