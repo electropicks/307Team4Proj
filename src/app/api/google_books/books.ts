@@ -50,7 +50,7 @@ export interface GetBooksResponse {
 }
 const BOOKS_QUERY_KEY = 'BOOKS';
 
-export const searchBooks = async (queryString: string) => {
+const searchBooks = async (queryString: string) => {
   if (!process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY) {
     console.error('Google Books API key is not set');
     throw new Error('Google Books API key is not set');
@@ -99,7 +99,7 @@ const resolveDuplicateIds = (books: Book[]) => {
   return Array.from(bookMap.values());
 };
 
-const getBook = async (bookId: string) => {
+export const getBook = async (bookId: string) => {
   const response = await fetch(
     `https://www.googleapis.com/books/v1/volumes/${bookId}`,
   );

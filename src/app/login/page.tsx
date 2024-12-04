@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { createClient } from '@/utils/supabase/client';
 import { handleGoogleSignIn } from '@/app/login/action';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function LoginPage() {
         }
       >
         <Button onClick={handleGoogleSignIn} className="flex m-auto">
-          <img
+          <Image
             className="w-6 h-6 m-1"
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             loading="lazy"
