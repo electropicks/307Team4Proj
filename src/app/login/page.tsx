@@ -37,28 +37,9 @@ export default function LoginPage() {
         </h2>
       </div>
 
-    <Box className="justify-center items-center min-h-screen bg-background">
-      <div className="flex text-primary m-auto w-auto">
-        <h3 className="flex m-auto mt-36 mb-16 text-3xl font-bold">
-          {' '}
-          One Place for All Your Reading Tracking Needs.{' '}
-        </h3>
-      </div>
-      <div className="flex text-secondary m-auto w-auto">
-        <h2 className="flex m-auto mb-16 text-xl font-bold">
-          {' '}
-          Join GreatReads Today.{' '}
-        </h2>
-      </div>
-
       <VStack
         p={4}
         borderWidth={2}
-        borderColor={'#D4A373'}
-        backgroundColor={'#D4A373'}
-        className={
-          'rounded-xl p-3 w-auto max-w-80 hover:bg-secondary hover:border-secondary color-primary flex m-auto'
-        }
         borderColor={'#D4A373'}
         backgroundColor={'#D4A373'}
         className={

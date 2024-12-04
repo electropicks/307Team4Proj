@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <div className="p-4 min-h-screen flex flex-col bg-background text-foreground w-screen">
       <div className="w-auto flex">
-        <form onSubmit={handleFormSubmit} className="flex p-4 w-2/5">
+        <form onSubmit={handleSearchSubmit} className="flex p-4 w-2/5">
           <input
             className="bg-secondary text-foreground rounded-2xl p-2 focus:outline-neutral-none placeholder:text-accent w-full my-auto"
             placeholder="Search for books..."
