@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: 'books.google.com',
         pathname: '/books/content/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'creazilla-store.fra1.digitaloceanspaces.com',
+        pathname: '/icons/3207857/bookshelf-icon-md.png',
+      },
     ],
   },
   webpack: (config) => {

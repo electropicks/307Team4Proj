@@ -1,38 +1,50 @@
 'use client';
 import { useState } from 'react';
 import Form from 'next/form';
+import Image from 'next/image';
 
 export default function ShelfButton() {
   const [isFormVisible, setFormVisible] = useState<boolean>(false);
+  const [isButtonVisible, setButtonVisible] = useState<boolean>(true);
   const [bookshelves, setBookshelves] = useState<string[]>([]);
 
   async function handleShelfSubmit(formData: FormData) {
     const input = formData.get('shelfName') as string;
     setBookshelves((prevBookshelves) => [...prevBookshelves, input]);
     setFormVisible(false);
+    setButtonVisible(true);
   }
   return (
-    <div>
-      <button
-        onClick={() => setFormVisible((prev) => !prev)}
-        className="bg-primary p-4 rounded-xl"
-      >
-        Create a new Bookshelf
-      </button>
+    <div className="flex mr-5 ml-auto">
+      {isButtonVisible && (
+        <button
+          onClick={() => {
+            setFormVisible((prev) => !prev);
+            setButtonVisible((prev) => !prev);
+          }}
+          className="bg-primary p-1 rounded-xl w-14 h-10 m-auto flex"
+        >
+          <Image
+            src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
+            alt="search button"
+            width={30}
+            height={30}
+          />
+          <p className="text-xl">+</p>
+        </button>
+      )}
       {isFormVisible && (
-        <Form action={handleShelfSubmit} className="mt-6 rounded-lg">
+        <Form action={handleShelfSubmit} className=" rounded-lg flex m-auto">
           <label
             htmlFor="shelfName"
             className="block text-lg text-gray-700 mb-2"
-          >
-            Name Your Book shelf
-          </label>
+          ></label>
           <input
             id="shelfName"
             name="shelfName"
             type="text"
-            placeholder="ex. fun reading"
-            className="py-2 px-4 border border-gray-300"
+            placeholder="Name your Bookshelf"
+            className="rounded-2xl bg-secondary placeholder:text-accent w-96 p-2"
           />
           <button
             type="submit"
