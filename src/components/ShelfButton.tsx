@@ -20,6 +20,7 @@ export default function ShelfButton() {
     }
     addBookshelf(newBookshelfName, {});
     setButtonVisible(true);
+    setFormVisible(false);
   }
 
   return (
