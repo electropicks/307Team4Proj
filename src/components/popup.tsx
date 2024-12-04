@@ -1,6 +1,6 @@
 'use client';
 
-import { useBook } from '@/app/api/books';
+import { useBook } from '@/app/api/google_books/books';
 import BookImage from '@/components/common/BookImage';
 
 interface BookPopupProps {

@@ -1,28 +1,12 @@
 'use client';
 
-import {
-  getUserBookshelves,
-  addBookshelf,
-  getBookIdsForBookshelf,
-  addBookToBookshelf,
-  deleteBookshelf,
-  removeBookFromBookshelf,
-  updateBookshelfName,
-  updateReadStatus,
-  getUserBookDetails,
-  updateNote,
-  updateRating,
-  updateFinishedDate,
-  updateStartDate,
-} from './api/supabase'; //
-
-import { Book, useBooks } from '@/app/api/books';
-import { useState } from 'react';
+import { Book, useBooks } from '@/app/api/google_books/books';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { Search } from 'lucide-react';
 import dayjs from 'dayjs';
-import BookImage from '@/components/common/BookImage';
 import BookPopup from '@/components/popup';
 import ShelfButton from '@/components/ShelfButton';
+import BookImage from '@/components/common/BookImage';
 
 export default function Home() {
   const [searchInput, setSearchInput] = useState('');
@@ -31,23 +15,11 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false); // Tracks if the user has searched
   const { data: books, isLoading: isBooksLoading } = useBooks(bookSearch);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // console.log(getUserBookshelves());
-    // console.log(updateReadStatus('jVZoAAAAQBAJ', 'reading'));
-    console.log(getUserBookDetails('jVZoAAAAQBAJ'));
-    console.log(updateStartDate('jVZoAAAAQBAJ', '2024-12-22'));
-    // console.log(deleteBookshelf(24));
-    // console.log(removeBookFromBookshelf(17, 'RlTCDwAAQBAJ'));
-    // console.log(updateBookshelfName(22, 'A Bookshelf Name 1'));
-    // console.log(addBookshelf('A Bookshelf Name 3'));
-    // addBookToBookshelf(24, 'GGqTEAAAQBAJ');
-    // addBookToBookshelf(17, 'jVZoAAAAQBAJ');
-    // addBookToBookshelf(17, 'RlTCDwAAQBAJ');
-    // console.log(getBookIdsForBookshelf(18));
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchInput.trim() === '') {
       return;
@@ -57,7 +29,6 @@ export default function Home() {
   };
 
   const handleBookClick = (book: Book) => {
-    console.log(book.id); //
     setSelectedBook(book);
   };
 
@@ -70,12 +41,12 @@ export default function Home() {
       <h1 className="bg-primary p-4 rounded-xl">Bookshelf</h1>
       <ShelfButton />
       <div className="w-full max-w-sm min-w-[200px]">
-        <form onSubmit={handleFormSubmit} className="flex p-4">
+        <form onSubmit={handleSearchSubmit} className="flex p-4">
           <input
             className="bg-secondary w-full text-foreground rounded-2xl p-2 focus:outline-neutral-none placeholder:text-accent"
             placeholder="Search for books..."
             value={searchInput}
-            onChange={handleInputChange}
+            onChange={handleSearchInputChange}
           />
           <button
             type="submit"
@@ -93,17 +64,7 @@ export default function Home() {
             {books.map((book) => (
               <div key={book.id}>
                 <div className="aspect-w-3 aspect-h-4 overflow-hidden bg-gray-200">
-                  {book.volumeInfo?.imageLinks?.thumbnail ? (
-                    <img
-                      src={book.volumeInfo.imageLinks.thumbnail}
-                      alt={`${book.volumeInfo.title} Thumbnail`}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center bg-gray-300 text-gray-500">
-                      No Image
-                    </div>
-                  )}
+                  <BookImage book={book} />
                 </div>
                 <div className="mt-2 text-center">
                   <p className="text-sm font-semibold text-gray-900">

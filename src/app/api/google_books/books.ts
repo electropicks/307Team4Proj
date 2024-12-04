@@ -99,7 +99,7 @@ const resolveDuplicateIds = (books: Book[]) => {
   return Array.from(bookMap.values());
 };
 
-const getBook = async (bookId: string) => {
+export const getBook = async (bookId: string) => {
   const response = await fetch(
     `https://www.googleapis.com/books/v1/volumes/${bookId}`,
   );
