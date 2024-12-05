@@ -1,7 +1,10 @@
 import { createClient } from '@/utils/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUserId } from './utils';
-import { Book, getBook } from '../google_books/books'; // Adjust the path as needed
+import { Book, getBook } from '../google_books/books';
+import { Database } from '@/utils/database.types'; // Adjust the path as needed
+
+export type ReadStatus = Database['public']['Enums']['ReadStatus'];
 
 /**
  * Adds a book to a bookshelf.
@@ -162,6 +165,40 @@ const ensureUserBookExists = async (googleBookId: string): Promise<boolean> => {
 };
 
 /**
+ * Update User Book Record (Insert on missing book)
+ * @param googleBookId
+ * @param readStatus
+ * @param notes
+ * @returns {Promise<boolean>} True if the record was updated successfully, false otherwise.
+ */
+export const upsertUserBook = async (
+  googleBookId: string,
+  readStatus: ReadStatus,
+  notes: string,
+): Promise<boolean> => {
+  try {
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+
+    const { error } = await supabase
+      .from('user_book')
+      .update({ read_status: readStatus, note: notes })
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId);
+
+    if (error) {
+      console.error('Error updating user book record:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return false;
+  }
+};
+
+/**
  * React Query hook to add a book to a bookshelf.
  * @returns Mutation object with methods to mutate the data.
  */
@@ -219,3 +256,18 @@ export const useBooksForBookshelf = (bookshelfId: number) => {
 /**
  * Additional functions and hooks for updating read status, notes, etc., can be added here following the same pattern.
  */
+
+export const useUpdateUserBook = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['updateUserBook'],
+    mutationFn: (data: {
+      googleBookId: string;
+      readStatus: ReadStatus;
+      notes: string;
+    }) => upsertUserBook(data.googleBookId, data.readStatus, data.notes),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['getUserBooks'] });
+    },
+  });
+};
