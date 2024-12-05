@@ -1,10 +1,80 @@
 'use client';
+import { useState } from 'react';
+import { useUserBookshelves } from '@/app/api/supabase';
+import { useAddBookToBookshelf } from '@/app/api/supabase';
 
 interface AddToShelfPopupProps {
+  googleBookId: string;
   handleClose: () => void;
 }
 
-export default function Home({ handleClose }: AddToShelfPopupProps) {
+/*getting user bookshleves to display on add popup */
+const BookshelvesList = ({ googleBookId }: { googleBookId: string }) => {
+  const { data: bookshelves, isLoading } = useUserBookshelves();
+  const [selectedBookshelfId, setSelectedBookshelfId] = useState<number | null>(
+    null,
+  );
+  if (isLoading) return <div>Loading...</div>;
+  return (
+    <div>
+      <ul>
+        {bookshelves?.map((shelf) => (
+          <li key={shelf.bookshelf_id}>
+            <button
+              onClick={() => {
+                setSelectedBookshelfId(shelf.bookshelf_id);
+              }}
+              className="text-2xl text-foreground"
+            >
+              {shelf.bookshelf_name}
+            </button>
+          </li>
+        ))}
+      </ul>
+      {/*the add book button only renders if a bookshelf has been clicked */}
+      {selectedBookshelfId && (
+        <AddBookButton
+          bookshelfId={selectedBookshelfId}
+          googleBookId={googleBookId}
+        />
+      )}
+    </div>
+  );
+};
+/*adding book to bookshelf */
+const AddBookButton = ({
+  bookshelfId,
+  googleBookId,
+}: {
+  bookshelfId: number;
+  googleBookId: string;
+}) => {
+  console.log('AddBookButton rendered');
+  const { mutate: addBookToBookshelf, isPending } = useAddBookToBookshelf();
+  const handleAddBook = () => {
+    addBookToBookshelf(
+      { bookshelfId, googleBookId },
+      {
+        onSuccess: () => {
+          console.log('Book added to bookshelf!');
+        },
+        onError: (error) => {
+          console.error('Error adding book:', error);
+        },
+      },
+    );
+  };
+  return (
+    <button onClick={handleAddBook} disabled={isPending}>
+      Add Book to Bookshelf
+    </button>
+  );
+};
+
+export default function Home({
+  googleBookId,
+  handleClose,
+}: AddToShelfPopupProps) {
   return (
     <div>
       <div className="relative z-10" role="dialog" aria-modal="true">
@@ -29,38 +99,7 @@ export default function Home({ handleClose }: AddToShelfPopupProps) {
                     <h2 className="text-2xl font-bold text-foreground sm:pr-12">
                       Back to Book Details
                     </h2>
-
-                    <div className="mt-2 flex gap-x-6">
-                      <img
-                        className="size-10"
-                        src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
-                      />
-                      <p className="text-2xl text-foreground">To Be Read</p>
-                    </div>
-
-                    <div className="mt-2 flex gap-x-6">
-                      <img
-                        className="size-10"
-                        src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
-                      />
-                      <p className="text-2xl text-foreground">Classics</p>
-                    </div>
-
-                    <div className="mt-2 flex gap-x-6">
-                      <img
-                        className="size-10"
-                        src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
-                      />
-                      <p className="text-2xl text-foreground">Mystery</p>
-                    </div>
-
-                    <div className="mt-2 flex gap-x-6">
-                      <img
-                        className="size-10"
-                        src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
-                      />
-                      <p className="text-2xl text-foreground">Fall Reads</p>
-                    </div>
+                    <BookshelvesList googleBookId={googleBookId} />
                   </div>
                 </div>
               </div>

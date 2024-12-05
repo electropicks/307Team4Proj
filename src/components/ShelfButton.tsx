@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Form from 'next/form';
 import { useCreateBookshelf, useUserBookshelves } from '@/app/api/supabase';
+import { useBooksForBookshelf } from '@/app/api/supabase';
 
 export default function ShelfButton() {
   const [isFormVisible, setFormVisible] = useState<boolean>(false);
@@ -9,6 +10,18 @@ export default function ShelfButton() {
   const { mutate: addBookshelf } = useCreateBookshelf();
   const { data: bookshelves, isLoading: areBookshelvesLoading } =
     useUserBookshelves();
+
+  const BooksInBookshelf = ({ bookshelfId }: { bookshelfId: number }) => {
+    const { data: books, isLoading } = useBooksForBookshelf(bookshelfId);
+
+    if (isLoading) return <div>Loading...</div>;
+
+    return (
+      <ul>
+        {books?.map((book) => <li key={book.id}>{book.volumeInfo.title}</li>)}
+      </ul>
+    );
+  };
 
   async function handleShelfSubmit(formData: FormData) {
     const newBookshelfName = formData.get('shelfName') as string;
@@ -71,6 +84,9 @@ export default function ShelfButton() {
                   <span className="font-bold text-blue-600">
                     {bookshelf.bookshelf_name}
                   </span>
+                  <div>
+                    <BooksInBookshelf bookshelfId={bookshelf.bookshelf_id} />
+                  </div>
                 </li>
               ))}
             </ul>
