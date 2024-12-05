@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useUserBookshelves } from '@/app/api/supabase';
 import { useAddBookToBookshelf } from '@/app/api/supabase';
 
@@ -14,60 +14,45 @@ const BookshelvesList = ({ googleBookId }: { googleBookId: string }) => {
   const [selectedBookshelfId, setSelectedBookshelfId] = useState<number | null>(
     null,
   );
-  if (isLoading) return <div>Loading...</div>;
-  return (
-    <div>
-      <ul>
-        {bookshelves?.map((shelf) => (
-          <li key={shelf.bookshelf_id}>
-            <button
-              onClick={() => {
-                setSelectedBookshelfId(shelf.bookshelf_id);
-              }}
-              className="text-2xl text-foreground"
-            >
-              {shelf.bookshelf_name}
-            </button>
-          </li>
-        ))}
-      </ul>
-      {/*the add book button only renders if a bookshelf has been clicked */}
-      {selectedBookshelfId && (
-        <AddBookButton
-          bookshelfId={selectedBookshelfId}
-          googleBookId={googleBookId}
-        />
-      )}
-    </div>
-  );
-};
-/*adding book to bookshelf */
-const AddBookButton = ({
-  bookshelfId,
-  googleBookId,
-}: {
-  bookshelfId: number;
-  googleBookId: string;
-}) => {
-  console.log('AddBookButton rendered');
   const { mutate: addBookToBookshelf, isPending } = useAddBookToBookshelf();
-  const handleAddBook = () => {
-    addBookToBookshelf(
-      { bookshelfId, googleBookId },
-      {
-        onSuccess: () => {
-          console.log('Book added to bookshelf!');
+  const handleAddBook = useCallback(
+    () =>
+      selectedBookshelfId &&
+      addBookToBookshelf(
+        { bookshelfId: selectedBookshelfId, googleBookId },
+        {
+          onSuccess: () => {
+            console.log('Book added to bookshelf!');
+          },
         },
-        onError: (error) => {
-          console.error('Error adding book:', error);
-        },
-      },
-    );
-  };
-  return (
+      ),
+    [selectedBookshelfId, addBookToBookshelf, googleBookId],
+  );
+
+  const addBookButton = (
     <button onClick={handleAddBook} disabled={isPending}>
       Add Book to Bookshelf
     </button>
+  );
+
+  if (isLoading) return <div>Loading...</div>;
+  return (
+    <ul>
+      {bookshelves?.map((shelf) => (
+        <li key={shelf.bookshelf_id}>
+          <button
+            onClick={() => {
+              setSelectedBookshelfId(shelf.bookshelf_id);
+            }}
+            className="text-2xl text-foreground"
+          >
+            {shelf.bookshelf_name}
+          </button>
+        </li>
+      ))}
+      {/*the add book button only renders if a bookshelf has been clicked */}
+      {selectedBookshelfId && addBookButton}
+    </ul>
   );
 };
 
