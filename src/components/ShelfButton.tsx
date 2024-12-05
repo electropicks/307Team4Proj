@@ -97,7 +97,7 @@ export default function ShelfButton() {
                     <BooksInBookshelf bookshelfId={bookshelf.bookshelf_id} />
                     {/* Close Button */}
                     <button
-                    type="button"
+                      type="button"
                       /* onClick={handleExitPopupAction} */
                       className="text-gray-400 hover:text-gray-500 focus:outline-none"
                       aria-label="Delete shelf"
