@@ -11,7 +11,8 @@ const config: Config = {
         secondary: '#A3B18A', // Soft earthy tone
         accent: '#8C7B75', // Muted olive green
         darkPrimary: '#b38960', 
-        darkForeground: '#2c2621' 
+        darkForeground: '#2c2621' ,
+        darkSecondary: '#8a9675'
       },
     },
   },
