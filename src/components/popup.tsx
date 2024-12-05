@@ -4,7 +4,6 @@ import { useBook } from '@/app/api/google_books/books';
 import BookImage from '@/components/common/BookImage';
 import AddToShelfPopup from '@/components/AddToShelfPopup';
 import { useState } from 'react';
-import Form from 'next/form';
 
 interface BookPopupProps {
   selectedBookId: string;
@@ -43,7 +42,6 @@ export default function BookPopup({
       role="dialog"
       aria-modal="true"
     >
-     
       <div className="relative bg-background rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
@@ -118,7 +116,9 @@ export default function BookPopup({
                 Add to Shelf
                 {/*  <AddToShelfPopup/> */}
               </button>
-              {isFormVisible  && <AddToShelfPopup setFormVisible={setFormVisible}/> }
+              {isFormVisible && (
+                <AddToShelfPopup handleClose={() => setFormVisible(false)} />
+              )}
             </div>
 
             {/* User Notes */}
