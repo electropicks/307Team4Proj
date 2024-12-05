@@ -86,6 +86,27 @@ export default function ShelfButton() {
                   </span>
                   <div>
                     <BooksInBookshelf bookshelfId={bookshelf.bookshelf_id} />
+                    {/* Close Button */}
+                    <button
+                    type="button"
+                      /* onClick={handleExitPopupAction} */
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                      aria-label="Delete shelf"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </li>
               ))}
