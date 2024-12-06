@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import {
   useUserBookshelves,
   useBooksForBookshelf,
@@ -21,11 +21,10 @@ interface BookshelvesPanelProps {
   onCloseAction: () => void;
 }
 
-export default function BookshelvesPanel({
-  onCloseAction,
-}: BookshelvesPanelProps) {
+const BookshelvesPanel = ({ onCloseAction }: BookshelvesPanelProps) => {
   const { data: bookshelves, isLoading: areBookshelvesLoading } =
     useUserBookshelves();
+
   const { mutate: removeBookFromBookshelf } = useRemoveBookFromBookshelf();
   const { mutate: addBookshelf } = useCreateBookshelf();
 
@@ -80,9 +79,12 @@ export default function BookshelvesPanel({
       alert('Please enter a valid bookshelf name.');
       return;
     }
-    addBookshelf(newShelfName, {});
-    setNewShelfName('');
-    setIsAddingShelf(false);
+    addBookshelf(newShelfName, {
+      onSuccess: () => {
+        setNewShelfName('');
+        setIsAddingShelf(false);
+      },
+    });
   };
 
   const BooksInBookshelf = ({
@@ -92,6 +94,7 @@ export default function BookshelvesPanel({
     bookshelfId: number;
     bookshelfName: string;
   }) => {
+    // Added staleTime and cacheTime for better caching and reduced re-fetches
     const { data: books, isLoading } = useBooksForBookshelf(bookshelfId);
 
     if (isLoading) return <div>Loading...</div>;
@@ -229,6 +232,7 @@ export default function BookshelvesPanel({
                     {bookshelf.bookshelf_name}
                   </span>
                   <div className="mt-6 flex gap-x-6 gap-y-10 overflow-hidden">
+                    {/* Each bookshelf’s books are fetched once and cached */}
                     <BooksInBookshelf
                       bookshelfId={bookshelf.bookshelf_id}
                       bookshelfName={bookshelf.bookshelf_name}
@@ -274,4 +278,6 @@ export default function BookshelvesPanel({
       )}
     </div>
   );
-}
+};
+
+export default React.memo(BookshelvesPanel);

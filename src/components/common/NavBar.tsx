@@ -3,10 +3,10 @@ import { Button, Group, Heading } from '@chakra-ui/react';
 import NavLink from '@/app/NavLink';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User } from '@supabase/auth-js';
 
-export default function NavBar() {
+const NavBar = () => {
   const router = useRouter();
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
@@ -48,4 +48,6 @@ export default function NavBar() {
       </div>
     </nav>
   );
-}
+};
+
+export default React.memo(NavBar);
