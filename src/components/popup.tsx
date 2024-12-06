@@ -1,9 +1,9 @@
+'use client';
+
 import { useBook } from '@/app/api/google_books/books';
 import BookImage from '@/components/common/BookImage';
-import { useUserBookshelves } from '@/app/api/supabase';
-import { useAddBookToBookshelf } from '@/app/api/supabase';
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { Book } from 'lucide-react';
+import { useAddBookToBookshelf, useUserBookshelves } from '@/app/api/supabase';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface BookPopupProps {
   selectedBookId: string;
@@ -87,6 +87,7 @@ export default function BookPopup({
       )}
 
       <div className="relative bg-background rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
+        {/* Close Button */}
         <button
           type="button"
           onClick={handleExitPopupAction}
@@ -109,11 +110,14 @@ export default function BookPopup({
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Book Image */}
           <div className="md:col-span-4 flex justify-center">
             <div className="relative w-48 h-72 border border-accent rounded-lg shadow-sm">
               {<BookImage book={book} />}
             </div>
           </div>
+
+          {/* Book Details */}
           <div className="md:col-span-8">
             <h2 className="text-2xl font-bold text-foreground">
               {book.volumeInfo.title || 'No title available'}
@@ -132,6 +136,7 @@ export default function BookPopup({
               />
             </section>
 
+            {/* Action Buttons */}
             <div className="mt-6 flex items-center space-x-4">
               <button
                 type="button"
@@ -175,6 +180,7 @@ export default function BookPopup({
               </div>
             </div>
 
+            {/* User Notes */}
             <section className="mt-6">
               <h3 className="font-semibold text-foreground">My Notes</h3>
               <p className="mt-2 text-foreground">
