@@ -1,7 +1,8 @@
 import { createClient } from '@/utils/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUserId } from './utils';
-import { Book, getBook } from '../google_books/books'; // Adjust the path as needed
+import { Book, getBook } from '../google_books/books';
+import { getUserBookshelves } from '@/app/api/supabase/bookshelves'; // Adjust the path as needed
 
 /**
  * Adds a book to a bookshelf.
@@ -12,14 +13,27 @@ import { Book, getBook } from '../google_books/books'; // Adjust the path as nee
 export const addBookToBookshelf = async (
   bookshelfId: number,
   googleBookId: string,
-): Promise<boolean> => {
+): Promise<boolean | 'exists'> => {
   try {
-    const ensured = await ensureUserBookExists(googleBookId);
-    if (!ensured) {
+    const supabase = createClient();
+    // Check if book already exists in the shelf
+    const { data: existing, error: existingError } = await supabase
+      .from('bookshelf_book')
+      .select('google_book_id')
+      .eq('bookshelf_id', bookshelfId)
+      .eq('google_book_id', googleBookId);
+
+    if (existingError) {
+      console.error('Error checking existing book:', existingError);
       return false;
     }
 
-    const supabase = createClient();
+    if (existing && existing.length > 0) {
+      // Book already in that shelf
+      return 'exists';
+    }
+
+    // If not exists, insert it
     const { error } = await supabase
       .from('bookshelf_book')
       .insert([{ bookshelf_id: bookshelfId, google_book_id: googleBookId }]);
@@ -28,6 +42,7 @@ export const addBookToBookshelf = async (
       console.error('Error adding book to bookshelf:', error);
       return false;
     }
+
     return true;
   } catch (error) {
     console.error('Unexpected error:', error);
@@ -197,8 +212,12 @@ export const useRemoveBookFromBookshelf = () => {
       bookshelfId: number;
       googleBookId: string;
     }) => removeBookFromBookshelf(bookshelfId, googleBookId),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Invalidate both the shelves and the specific shelf's books
       void queryClient.invalidateQueries({ queryKey: ['getUserBookshelves'] });
+      void queryClient.invalidateQueries({
+        queryKey: ['getBooksForBookshelf', variables.bookshelfId],
+      });
     },
   });
 };

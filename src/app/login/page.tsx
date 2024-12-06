@@ -47,11 +47,13 @@ export default function LoginPage() {
         }
       >
         <Button onClick={handleGoogleSignIn} className="flex m-auto">
-          <img
+          <Image
             className="w-6 h-6 m-1"
             src="https://www.svgrepo.com/show/475656/google-color.svg"
-            loading="lazy"
+            width={24}
+            height={24}
             alt="google logo"
+            loading="lazy"
           />
           <div className="m-auto"> Login or Signup with Google</div>
         </Button>

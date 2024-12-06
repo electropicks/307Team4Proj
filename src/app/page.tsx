@@ -5,15 +5,16 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { Search } from 'lucide-react';
 import dayjs from 'dayjs';
 import BookPopup from '@/components/popup';
-import ShelfButton from '@/components/ShelfButton';
+import BookshelvesPanel from '@/components/BookshelvesPanel';
 import BookImage from '@/components/common/BookImage';
 
 export default function Home() {
   const [searchInput, setSearchInput] = useState('');
   const [bookSearch, setBookSearch] = useState('');
   const [selectedBook, setSelectedBook] = useState<Book | undefined>();
-  const [hasSearched, setHasSearched] = useState(false); // Tracks if the user has searched
+  const [hasSearched, setHasSearched] = useState(false);
   const { data: books, isLoading: isBooksLoading } = useBooks(bookSearch);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
@@ -25,7 +26,7 @@ export default function Home() {
       return;
     }
     setBookSearch(searchInput);
-    setHasSearched(true); // Set the search flag to true after searching
+    setHasSearched(true);
   };
 
   const handleBookClick = (book: Book) => {
@@ -37,11 +38,11 @@ export default function Home() {
   };
 
   return (
-    <div className="p-4 min-h-screen flex flex-col bg-background text-foreground w-screen">
+    <div className="p-4 min-h-screen flex flex-col bg-background text-foreground w-screen relative">
       <div className="w-auto flex">
         <form onSubmit={handleSearchSubmit} className="flex p-4 w-2/5">
           <input
-            className="bg-secondary text-foreground rounded-2xl p-2 focus:outline-neutral-none placeholder:text-accent w-full my-auto"
+            className="bg-secondary text-foreground rounded-2xl p-2 placeholder:text-accent w-full my-auto focus:outline-none"
             placeholder="Search for books..."
             value={searchInput}
             onChange={handleSearchInputChange}
@@ -53,8 +54,14 @@ export default function Home() {
             <Search />
           </button>
         </form>
-        <ShelfButton />
+        <button
+          onClick={() => setShowSidebar((prev) => !prev)}
+          className="ml-4 px-4 py-2 bg-primary text-foreground rounded hover:bg-primary-dark"
+        >
+          {showSidebar ? 'Hide Bookshelves' : 'Show Bookshelves'}
+        </button>
       </div>
+
       <div className="w-full mt-4 flex justify-center">
         {isBooksLoading ? (
           <p>Loading...</p>
@@ -94,11 +101,18 @@ export default function Home() {
           )
         )}
       </div>
+
       {selectedBook && (
         <BookPopup
           selectedBookId={selectedBook.id}
           handleExitPopupAction={handleExitPopup}
         />
+      )}
+
+      {showSidebar && (
+        <div className="fixed top-0 right-0 h-full w-72  bg-white border-l border-gray-300 p-4 z-50 overflow-y-auto">
+          <BookshelvesPanel onCloseAction={() => setShowSidebar(false)} />
+        </div>
       )}
     </div>
   );
