@@ -131,7 +131,131 @@ export const getBooksForBookshelf = async (
 };
 
 /**
+ * Updates the read_status for a specific book for the current user.
+ * @param {string} googleBookId - The Google ID of the book.
+ * @param {'want_to_read' | 'reading' | 'read' | 'unread'} readStatus - The new reading status of the book.
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the update was successful.
+ */
+export const updateReadStatus = async (
+  googleBookId: string,
+  readStatus: 'want_to_read' | 'reading' | 'read' | 'unread',
+): Promise<boolean> => {
+  try {
+    // checks if the user already has a relation to this book, if not it will create one
+    const ensured = await ensureUserBookExists(googleBookId);
+    if (!ensured) {
+      return false; // if ensuring the row exists failed, abort the update
+    }
+
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+    const { error } = await supabase
+      .from('user_book')
+      .update({ read_status: readStatus })
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId);
+
+    if (error) {
+      console.error('Error updating read status:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return false;
+  }
+};
+
+/**
+ * Updates the note for a specific book for the current user.
+ * @param {string} googleBookId - The Google ID of the book.
+ * @param {string} note - The new note for the book.
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the update was successful.
+ */
+export const updateNote = async (
+  googleBookId: string,
+  note: string,
+): Promise<boolean> => {
+  try {
+    // checks if the user already has a relation to this book, if not it will create one
+    const ensured = await ensureUserBookExists(googleBookId);
+    if (!ensured) {
+      return false; // if ensuring the row exists failed, abort the update
+    }
+
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+    const { error } = await supabase
+      .from('user_book')
+      .update({ note: note })
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId);
+
+    if (error) {
+      console.error('Error updating note:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return false;
+  }
+};
+
+/**
+ * Fetches read_status, rating, note, start_date, and finished_date of the current user for a specific book.
+ * Returns null value in promise and logs an error to the console if non-existent.
+ * @param {string} googleBookId - The Google ID of the book.
+ * @returns {Promise<{
+ *   read_status: string | null;
+ *   rating: number | null;
+ *   note: string | null;
+ *   start_date: string | null;
+ *   finished_date: string | null;
+ * } | null>} A promise that resolves to an object containing the user's book details:
+ *            Resolves to null if no details exist for the specified book.
+ */
+export const getUserBookDetails = async (
+  googleBookId: string,
+): Promise<{
+  read_status: string | null;
+  rating: number | null;
+  note: string | null;
+  start_date: string | null;
+  finished_date: string | null;
+} | null> => {
+  try {
+    const supabase = createClient();
+    const currentUserId = await getUserId();
+
+    const { data, error } = await supabase
+      .from('user_book')
+      .select('read_status, rating, note, started_date, finished_date')
+      .eq('user_id', currentUserId)
+      .eq('google_book_id', googleBookId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching book details:', error);
+      return null;
+    }
+
+    return {
+      read_status: data.read_status,
+      rating: data.rating,
+      note: data.note,
+      start_date: data.started_date,
+      finished_date: data.finished_date,
+    };
+  } catch (error) {
+    console.error('Unexpected error in getUserBookDetails:', error);
+    return null;
+  }
+};
+
+/**
  * Ensures that a user_book entry exists for a specific book and user; creates one if it doesn't.
+ * This is a helper function for functions which edit or add books and never needs to be called directly.
  * @param {string} googleBookId - The Google Book ID of the book.
  * @returns {Promise<boolean>} True if the entry exists or was created successfully, false otherwise.
  */
@@ -175,6 +299,8 @@ const ensureUserBookExists = async (googleBookId: string): Promise<boolean> => {
     return false;
   }
 };
+
+// Hooks for the functions above
 
 /**
  * React Query hook to add a book to a bookshelf.
@@ -238,3 +364,58 @@ export const useBooksForBookshelf = (bookshelfId: number) => {
 /**
  * Additional functions and hooks for updating read status, notes, etc., can be added here following the same pattern.
  */
+
+/**
+ * React Query hook to update the read status for a specific book.
+ * @returns Mutation object with methods to mutate the data.
+ */
+export const useUpdateReadStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['updateReadStatus'],
+    mutationFn: ({
+      googleBookId,
+      readStatus,
+    }: {
+      googleBookId: string;
+      readStatus: 'want_to_read' | 'reading' | 'read' | 'unread';
+    }) => updateReadStatus(googleBookId, readStatus),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['getUserBookDetails'] });
+    },
+  });
+};
+
+/**
+ * React Query hook to update the note for a specific book.
+ * @returns Mutation object with methods to mutate the data.
+ */
+export const useUpdateNote = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['updateNote'],
+    mutationFn: ({
+      googleBookId,
+      note,
+    }: {
+      googleBookId: string;
+      note: string;
+    }) => updateNote(googleBookId, note),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['getUserBookDetails'] });
+    },
+  });
+};
+
+/**
+ * React Query hook to fetch user-specific book details for a specific book.
+ * @param googleBookId - The Google ID of the book.
+ * @returns Query object with data and status.
+ */
+export const useUserBookDetails = (googleBookId: string) => {
+  return useQuery({
+    queryKey: ['getUserBookDetails', googleBookId],
+    queryFn: () => getUserBookDetails(googleBookId),
+    enabled: !!googleBookId,
+  });
+};
