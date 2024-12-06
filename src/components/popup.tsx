@@ -2,12 +2,13 @@ import { useBook } from '@/app/api/google_books/books';
 import BookImage from '@/components/common/BookImage';
 import {
   ReadStatusEnum,
+  useAddBookToBookshelf,
+  useUpdateNote,
   useUpdateReadStatus,
   useUserBookDetails,
   useUserBookshelves,
 } from '@/app/api/supabase';
-import { useAddBookToBookshelf } from '@/app/api/supabase';
-import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface BookPopupProps {
   selectedBookId: string;
@@ -24,9 +25,12 @@ export default function BookPopup({
   const { mutate: addBookToBookshelf } = useAddBookToBookshelf();
   const { data: userBook, isPending: isUserBookPending } =
     useUserBookDetails(selectedBookId);
-  console.log(userBook);
   const { mutate: updateReadStatus, isPending: isUpdateReadStatusPending } =
     useUpdateReadStatus();
+  const { mutate: updateNote, isPending: isUpdateNotePending } =
+    useUpdateNote();
+  const [isEditingNote, setIsEditingNote] = useState(false);
+  const [note, setNote] = useState(userBook?.note || '');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -127,7 +131,6 @@ export default function BookPopup({
       )}
 
       <div className="relative bg-background rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
-        {/* Close Button */}
         <button
           type="button"
           onClick={handleExitPopupAction}
@@ -150,14 +153,11 @@ export default function BookPopup({
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Book Image */}
           <div className="md:col-span-4 flex justify-center">
             <div className="relative w-48 h-72 border border-accent rounded-lg shadow-sm">
               {<BookImage book={book} />}
             </div>
           </div>
-
-          {/* Book Details */}
           <div className="md:col-span-8">
             <h2 className="text-2xl font-bold text-foreground">
               {book.volumeInfo.title || 'No title available'}
@@ -176,7 +176,6 @@ export default function BookPopup({
               />
             </section>
 
-            {/* Action Buttons */}
             <div className="mt-6 flex items-center space-x-4">
               <button
                 type="button"
@@ -223,12 +222,47 @@ export default function BookPopup({
               </div>
             </div>
 
-            {/* User Notes */}
             <section className="mt-6">
               <h3 className="font-semibold text-foreground">My Notes</h3>
-              <p className="mt-2 text-foreground">
-                I want to read this book!!!
-              </p>
+              {isEditingNote ? (
+                <div>
+                  <textarea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    className="mt-2 w-full border border-gray-300 rounded p-2"
+                  />
+                  <div className="flex space-x-4 mt-2">
+                    <button
+                      onClick={() => {
+                        updateNote({ googleBookId: selectedBookId, note });
+                        setIsEditingNote(false);
+                      }}
+                      disabled={isUpdateNotePending}
+                      className="px-4 py-2 bg-primary text-foreground rounded hover:bg-darkPrimary focus:ring-2 focus:ring-gray-300 focus:outline-none"
+                    >
+                      {isUpdateNotePending ? 'Saving...' : 'Save'}
+                    </button>
+                    <button
+                      onClick={() => setIsEditingNote(false)}
+                      className="px-4 py-2 bg-secondary text-foreground rounded hover:bg-darkSecondary focus:ring-2 focus:ring-gray-300 focus:outline-none"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-2 text-foreground">
+                  {userBook?.note || 'No notes available.'}
+                </p>
+              )}
+              {!isEditingNote && (
+                <button
+                  onClick={() => setIsEditingNote(true)}
+                  className="mt-2 px-4 py-2 bg-primary text-foreground rounded hover:bg-darkPrimary focus:ring-2 focus:ring-gray-300 focus:outline-none"
+                >
+                  Edit Notes
+                </button>
+              )}
             </section>
           </div>
         </div>
