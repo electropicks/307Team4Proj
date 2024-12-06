@@ -2,7 +2,10 @@ import { createClient } from '@/utils/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUserId } from './utils';
 import { Book, getBook } from '../google_books/books';
+import { Database } from '@/utils/database.types'; // Adjust the path as needed
 import { getUserBookshelves } from '@/app/api/supabase/bookshelves'; // Adjust the path as needed
+
+export type ReadStatus = Database['public']['Enums']['ReadStatus'];
 
 /**
  * Adds a book to a bookshelf.
@@ -16,24 +19,6 @@ export const addBookToBookshelf = async (
 ): Promise<boolean | 'exists'> => {
   try {
     const supabase = createClient();
-    // Check if book already exists in the shelf
-    const { data: existing, error: existingError } = await supabase
-      .from('bookshelf_book')
-      .select('google_book_id')
-      .eq('bookshelf_id', bookshelfId)
-      .eq('google_book_id', googleBookId);
-
-    if (existingError) {
-      console.error('Error checking existing book:', existingError);
-      return false;
-    }
-
-    if (existing && existing.length > 0) {
-      // Book already in that shelf
-      return 'exists';
-    }
-
-    // If not exists, insert it
     const { error } = await supabase
       .from('bookshelf_book')
       .insert([{ bookshelf_id: bookshelfId, google_book_id: googleBookId }]);
@@ -133,12 +118,12 @@ export const getBooksForBookshelf = async (
 /**
  * Updates the read_status for a specific book for the current user.
  * @param {string} googleBookId - The Google ID of the book.
- * @param {'want_to_read' | 'reading' | 'read' | 'unread'} readStatus - The new reading status of the book.
+ * @param {ReadStatus} readStatus - The new reading status of the book.
  * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the update was successful.
  */
 export const updateReadStatus = async (
   googleBookId: string,
-  readStatus: 'want_to_read' | 'reading' | 'read' | 'unread',
+  readStatus: ReadStatus,
 ): Promise<boolean> => {
   try {
     // checks if the user already has a relation to this book, if not it will create one
@@ -378,7 +363,7 @@ export const useUpdateReadStatus = () => {
       readStatus,
     }: {
       googleBookId: string;
-      readStatus: 'want_to_read' | 'reading' | 'read' | 'unread';
+      readStatus: ReadStatus;
     }) => updateReadStatus(googleBookId, readStatus),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['getUserBookDetails'] });
