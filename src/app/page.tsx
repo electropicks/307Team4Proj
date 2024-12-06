@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import BookPopup from '@/components/popup';
 import BookshelvesPanel from '@/components/BookshelvesPanel';
 import BookImage from '@/components/common/BookImage';
+import Image from 'next/image';
 
 export default function Home() {
   const [searchInput, setSearchInput] = useState('');
@@ -55,12 +56,18 @@ export default function Home() {
             <Search />
           </button>
         </form>
+
         <button
           onClick={() => setShowSidebar((prev) => !prev)}
           className="ml-auto mr-3 px-2 bg-primary text-foreground rounded-2xl hover:bg-primary-dark h-10 my-auto"
         >
-          <img src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
-          width="32px"/>
+          <Image
+            src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
+            alt="Bookshelf Icon"
+            width={24}
+            height={24}
+            loading="lazy"
+          />
         </button>
       </div>
 
