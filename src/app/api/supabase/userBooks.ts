@@ -249,35 +249,14 @@ const ensureUserBookExists = async (googleBookId: string): Promise<boolean> => {
     const supabase = createClient();
     const currentUserId = await getUserId();
 
-    // Check if this user-book entry already exists
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('user_book')
-      .select('user_id')
-      .eq('user_id', currentUserId)
-      .eq('google_book_id', googleBookId)
-      .single();
+      .upsert([{ user_id: currentUserId, google_book_id: googleBookId }]);
 
-    if (error && error.code !== 'PGRST116') {
-      // Error other than "No rows found"
-      console.error('Error checking user_book existence:', error);
+    if (error) {
+      console.error('Error ensuring user_book exists:', error);
       return false;
     }
-
-    if (data) {
-      // The entry exists
-      return true;
-    }
-
-    // Insert the row since it doesn't exist
-    const { error: insertError } = await supabase
-      .from('user_book')
-      .insert([{ user_id: currentUserId, google_book_id: googleBookId }]);
-
-    if (insertError) {
-      console.error('Error inserting user_book entry:', insertError);
-      return false;
-    }
-
     return true;
   } catch (error) {
     console.error('Unexpected error in ensureUserBookExists:', error);
@@ -286,7 +265,6 @@ const ensureUserBookExists = async (googleBookId: string): Promise<boolean> => {
 };
 
 // Hooks for the functions above
-
 /**
  * React Query hook to add a book to a bookshelf.
  * @returns Mutation object with methods to mutate the data.
