@@ -1,7 +1,7 @@
 'use client';
 
 import { Book, useBooks } from '@/app/api/google_books/books';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Search } from 'lucide-react';
 import dayjs from 'dayjs';
 import BookPopup from '@/components/popup';
@@ -9,7 +9,7 @@ import BookshelvesPanel from '@/components/BookshelvesPanel';
 import BookImage from '@/components/common/BookImage';
 import Image from 'next/image';
 
-export default function Home() {
+const Home = () => {
   const [searchInput, setSearchInput] = useState('');
   const [bookSearch, setBookSearch] = useState('');
   const [selectedBook, setSelectedBook] = useState<Book | undefined>();
@@ -125,4 +125,6 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
+
+export default React.memo(Home);

@@ -218,6 +218,8 @@ export const getUserBookDetails = async (
     const supabase = createClient();
     const currentUserId = await getUserId();
 
+    await ensureUserBookExists(googleBookId);
+
     const { data, error } = await supabase
       .from('user_book')
       .select('read_status, rating, note, started_date, finished_date')
@@ -285,8 +287,10 @@ export const useAddBookToBookshelf = () => {
       bookshelfId: number;
       googleBookId: string;
     }) => addBookToBookshelf(bookshelfId, googleBookId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['getUserBookshelves'] });
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: ['getBooksForBookshelf', variables.bookshelfId],
+      });
     },
   });
 };
@@ -306,9 +310,8 @@ export const useRemoveBookFromBookshelf = () => {
       bookshelfId: number;
       googleBookId: string;
     }) => removeBookFromBookshelf(bookshelfId, googleBookId),
-    onSuccess: (data, variables) => {
-      // Invalidate both the shelves and the specific shelf's books
-      void queryClient.invalidateQueries({ queryKey: ['getUserBookshelves'] });
+    onSuccess: (_data, variables) => {
+      // Invalidate only the relevant bookshelf’s books
       void queryClient.invalidateQueries({
         queryKey: ['getBooksForBookshelf', variables.bookshelfId],
       });
@@ -326,6 +329,7 @@ export const useBooksForBookshelf = (bookshelfId: number) => {
     queryKey: ['getBooksForBookshelf', bookshelfId],
     queryFn: () => getBooksForBookshelf(bookshelfId),
     enabled: !!bookshelfId,
+    staleTime: 1000 * 60 * 6, // data is considered fresh for 5 minutes
   });
 };
 
@@ -371,8 +375,10 @@ export const useUpdateNote = () => {
       googleBookId: string;
       note: string;
     }) => updateNote(googleBookId, note),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['getUserBookDetails'] });
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: ['getUserBookDetails', variables.googleBookId],
+      });
     },
   });
 };

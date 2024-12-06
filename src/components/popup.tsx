@@ -8,17 +8,17 @@ import {
   useUserBookDetails,
   useUserBookshelves,
 } from '@/app/api/supabase';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface BookPopupProps {
   selectedBookId: string;
   handleExitPopupAction: () => void;
 }
 
-export default function BookPopup({
+const BookPopup = ({
   selectedBookId,
   handleExitPopupAction,
-}: BookPopupProps) {
+}: BookPopupProps) => {
   const { data: book, isLoading } = useBook(selectedBookId);
   const { data: bookshelves, isLoading: isBookshelvesLoading } =
     useUserBookshelves();
@@ -186,12 +186,6 @@ export default function BookPopup({
                   ? 'Marking...'
                   : `Mark as ${bookStatusInverse}`}
               </button>
-              <button
-                type="button"
-                className="px-4 py-2 bg-primary text-foreground rounded hover:bg-darkPrimary focus:ring-2 focus:ring-gray-300 focus:outline-none"
-              >
-                Edit Notes
-              </button>
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen((prev) => !prev)}
@@ -269,4 +263,6 @@ export default function BookPopup({
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(BookPopup);

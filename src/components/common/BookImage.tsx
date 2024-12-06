@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Book } from '@/app/api/google_books/books';
+import React from 'react';
 
 const MISSING_PLACEHOLDER_URL = 'https://unknown.com'; // Placeholder URL for missing images
 
@@ -43,4 +44,4 @@ const BookImage = ({ book }: BookImageProps) => {
   );
 };
 
-export default BookImage;
+export default React.memo(BookImage);
