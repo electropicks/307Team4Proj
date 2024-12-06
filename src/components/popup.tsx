@@ -120,7 +120,7 @@ export default function BookPopup({
               {isFormVisible && (
                 <AddToShelfPopup
                   googleBookId={selectedBookId}
-                  handleClose={() => setFormVisible(false)}
+                  handleCloseAction={() => setFormVisible(false)}
                 />
               )}
             </div>
