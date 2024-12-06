@@ -7,6 +7,8 @@ import {
   useRemoveBookFromBookshelf,
   useCreateBookshelf,
 } from '@/app/api/supabase';
+import BookPopup from '@/components/popup';
+import { Book } from '@/app/api/google_books/books';
 
 interface BookToRemove {
   bookshelfId: number;

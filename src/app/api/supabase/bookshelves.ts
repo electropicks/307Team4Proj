@@ -120,8 +120,6 @@ export const updateBookshelfName = async (
   }
 };
 
-// Hooks for the functions above
-
 /**
  * React Query hook to create a new bookshelf.
  * @returns Mutation object with methods to mutate the data.
