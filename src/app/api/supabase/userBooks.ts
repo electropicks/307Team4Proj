@@ -5,7 +5,13 @@ import { Book, getBook } from '../google_books/books';
 import { Database } from '@/utils/database.types'; // Adjust the path as needed
 import { getUserBookshelves } from '@/app/api/supabase/bookshelves'; // Adjust the path as needed
 
-export type ReadStatus = Database['public']['Enums']['ReadStatus'];
+type ReadStatus = Database['public']['Enums']['ReadStatus'];
+export enum ReadStatusEnum {
+  READ = 'READ',
+  READING = 'READING',
+  TO_READ = 'WANT_TO_READ',
+  UNREAD = 'UNREAD',
+}
 
 /**
  * Adds a book to a bookshelf.
@@ -343,8 +349,10 @@ export const useUpdateReadStatus = () => {
       googleBookId: string;
       readStatus: ReadStatus;
     }) => updateReadStatus(googleBookId, readStatus),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['getUserBookDetails'] });
+    onSuccess: (data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: ['getUserBookDetails', variables.googleBookId],
+      });
     },
   });
 };
