@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import BookPopup from '@/components/popup';
 import BookshelvesPanel from '@/components/BookshelvesPanel';
 import BookImage from '@/components/common/BookImage';
+import Image from 'next/image';
 
 export default function Home() {
   const [searchInput, setSearchInput] = useState('');
@@ -23,6 +24,7 @@ export default function Home() {
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchInput.trim() === '') {
+      setHasSearched(false);
       return;
     }
     setBookSearch(searchInput);
@@ -38,11 +40,11 @@ export default function Home() {
   };
 
   return (
-    <div className="p-4 min-h-screen flex flex-col bg-background text-foreground w-screen relative">
+    <div className="p-4 min-h-screen flex flex-col bg-background text-foreground w-full relative">
       <div className="w-auto flex">
-        <form onSubmit={handleSearchSubmit} className="flex p-4 w-2/5">
+        <form onSubmit={handleSearchSubmit} className="flex p-4 w-1/2">
           <input
-            className="bg-secondary text-foreground rounded-2xl p-2 placeholder:text-accent w-full my-auto focus:outline-none"
+            className="bg-secondary text-foreground rounded-2xl p-2 placeholder:text-accent w-screen my-auto focus:outline-none"
             placeholder="Search for books..."
             value={searchInput}
             onChange={handleSearchInputChange}
@@ -54,11 +56,18 @@ export default function Home() {
             <Search />
           </button>
         </form>
+
         <button
           onClick={() => setShowSidebar((prev) => !prev)}
-          className="ml-4 px-4 py-2 bg-primary text-foreground rounded hover:bg-primary-dark"
+          className="ml-auto mr-3 px-2 bg-primary text-foreground rounded-2xl hover:bg-primary-dark h-10 my-auto"
         >
-          {showSidebar ? 'Hide Bookshelves' : 'Show Bookshelves'}
+          <Image
+            src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3207857/bookshelf-icon-md.png"
+            alt="Bookshelf Icon"
+            width={24}
+            height={24}
+            loading="lazy"
+          />
         </button>
       </div>
 
@@ -110,7 +119,7 @@ export default function Home() {
       )}
 
       {showSidebar && (
-        <div className="fixed top-0 right-0 h-full w-72  bg-white border-l border-gray-300 p-4 z-50 overflow-y-auto">
+        <div className="fixed top-0 right-0 h-full w-1/3 bg-white border-l border-gray-300 p-4 z-50 overflow-y-auto">
           <BookshelvesPanel onCloseAction={() => setShowSidebar(false)} />
         </div>
       )}

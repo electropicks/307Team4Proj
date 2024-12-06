@@ -35,6 +35,15 @@ export default function BookshelvesPanel({
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastColorClass, setToastColorClass] = useState('bg-green-500');
+  const [selectedBook, setSelectedBook] = useState<Book>();
+
+  const handleBookClick = (book: Book) => {
+    setSelectedBook(book);
+  };
+
+  const handleExitPopup = () => {
+    setSelectedBook(undefined);
+  };
 
   const confirmRemove = () => {
     if (!bookToRemove) return;
@@ -88,18 +97,25 @@ export default function BookshelvesPanel({
     if (isLoading) return <div>Loading...</div>;
     if (!books || books.length === 0) {
       return (
-        <div className="text-sm text-gray-500">No books in this shelf.</div>
+        <div className="text-sm text-gray-500 pl-3">
+          No books in this shelf.
+        </div>
       );
     }
 
     return (
-      <ul className="list-disc pl-6 space-y-1">
+      <ul className="list-disc pl-3">
         {books.map((book) => (
           <li
             key={book.id}
             className="flex items-center justify-between space-x-2"
           >
-            <span>{book.volumeInfo.title}</span>
+            <button
+              onClick={() => handleBookClick(book)}
+              className="mt-1 text-sm text-foreground hover:background"
+            >
+              {book.volumeInfo.title}
+            </button>
             <button
               type="button"
               onClick={() =>
@@ -110,10 +126,10 @@ export default function BookshelvesPanel({
                   bookTitle: book.volumeInfo.title ?? 'This Book',
                 })
               }
-              className="text-red-500 hover:text-red-700 focus:outline-none"
+              className="text-red-500 pl-2 hover:text-red-700 focus:outline-none"
               aria-label="Remove book"
             >
-              X
+              x
             </button>
           </li>
         ))}
@@ -153,20 +169,20 @@ export default function BookshelvesPanel({
 
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Your Bookshelves
+          My Bookshelves
         </h2>
 
         {!isAddingShelf ? (
           <button
             onClick={() => setIsAddingShelf(true)}
-            className="bg-primary text-white px-3 py-2 rounded hover:bg-primary-dark transition-colors"
+            className="bg-primary text-white px-3 py-2 rounded-2xl hover:bg-primary-dark transition-colors"
           >
             + Add New Shelf
           </button>
         ) : (
           <form
             onSubmit={handleShelfSubmit}
-            className="flex items-center space-x-2 mb-4"
+            className="flex items-center space-x-2 mb-2"
           >
             <input
               name="shelfName"
@@ -202,22 +218,24 @@ export default function BookshelvesPanel({
         ) : !bookshelves || bookshelves.length === 0 ? (
           <p className="text-center text-gray-500">No bookshelves found.</p>
         ) : (
-          <ul className="space-y-4">
+          <ul className="space-y-4 pt-4">
             {bookshelves.map((bookshelf) => (
-              <li
+              <div
                 key={bookshelf.bookshelf_id}
-                className="text-gray-700 border-b pb-4"
+                className="mx-auto max-w-2xl py-3 sm:px-3 sm:py-3 lg:max-w-7xl lg:px-8 flex justify-between"
               >
-                <span className="font-bold text-blue-600">
-                  {bookshelf.bookshelf_name}
-                </span>
-                <div className="mt-2">
-                  <BooksInBookshelf
-                    bookshelfId={bookshelf.bookshelf_id}
-                    bookshelfName={bookshelf.bookshelf_name}
-                  />
-                </div>
-              </li>
+                <li className="text-gray-700 border-b pb-4">
+                  <span className="text-2xl font-bold tracking-tight text-accent">
+                    {bookshelf.bookshelf_name}
+                  </span>
+                  <div className="mt-6 flex gap-x-6 gap-y-10 overflow-hidden">
+                    <BooksInBookshelf
+                      bookshelfId={bookshelf.bookshelf_id}
+                      bookshelfName={bookshelf.bookshelf_name}
+                    />
+                  </div>
+                </li>
+              </div>
             ))}
           </ul>
         )}
@@ -248,6 +266,12 @@ export default function BookshelvesPanel({
           </div>
         )}
       </div>
+      {selectedBook && (
+        <BookPopup
+          selectedBookId={selectedBook.id}
+          handleExitPopupAction={handleExitPopup}
+        />
+      )}
     </div>
   );
 }

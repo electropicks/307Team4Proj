@@ -1,10 +1,13 @@
-'use client';
-
 import { useBook } from '@/app/api/google_books/books';
 import BookImage from '@/components/common/BookImage';
-import { useUserBookshelves } from '@/app/api/supabase';
+import {
+  ReadStatusEnum,
+  useUpdateReadStatus,
+  useUserBookDetails,
+  useUserBookshelves,
+} from '@/app/api/supabase';
 import { useAddBookToBookshelf } from '@/app/api/supabase';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 
 interface BookPopupProps {
   selectedBookId: string;
@@ -19,9 +22,45 @@ export default function BookPopup({
   const { data: bookshelves, isLoading: isBookshelvesLoading } =
     useUserBookshelves();
   const { mutate: addBookToBookshelf } = useAddBookToBookshelf();
+  const { data: userBook, isPending: isUserBookPending } =
+    useUserBookDetails(selectedBookId);
+  console.log(userBook);
+  const { mutate: updateReadStatus, isPending: isUpdateReadStatusPending } =
+    useUpdateReadStatus();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [bookStatusInverse, setBookStatusInverse] = useState(
+    userBook?.read_status === ReadStatusEnum.READ ? 'Unread' : 'Read',
+  );
+
+  const onReadStatusAction = useCallback(() => {
+    if (isUpdateReadStatusPending || isUserBookPending) {
+      return;
+    }
+    const newReadStatus =
+      userBook?.read_status === ReadStatusEnum.READ
+        ? ReadStatusEnum.UNREAD
+        : ReadStatusEnum.READ;
+    updateReadStatus(
+      { googleBookId: selectedBookId, readStatus: newReadStatus },
+      {
+        onSuccess: () => {
+          console.log('Read status updated!');
+        },
+      },
+    );
+    setBookStatusInverse(
+      newReadStatus === ReadStatusEnum.READ ? 'Unread' : 'Read',
+    );
+  }, [
+    isUpdateReadStatusPending,
+    isUserBookPending,
+    selectedBookId,
+    updateReadStatus,
+    userBook?.read_status,
+  ]);
 
   const handleAddBook = useCallback(
     (bookshelfId: number) => {
@@ -142,8 +181,11 @@ export default function BookPopup({
               <button
                 type="button"
                 className="px-4 py-2 bg-foreground text-background rounded hover:bg-darkForeground focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                onClick={onReadStatusAction}
               >
-                Mark as Unread
+                {isUpdateReadStatusPending || isUserBookPending
+                  ? 'Marking...'
+                  : `Mark as ${bookStatusInverse}`}
               </button>
               <button
                 type="button"
