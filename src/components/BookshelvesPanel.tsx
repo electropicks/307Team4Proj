@@ -117,7 +117,9 @@ const BookshelvesPanel = ({ onCloseAction }: BookshelvesPanelProps) => {
               onClick={() => handleBookClick(book)}
               className="mt-1 text-sm text-foreground hover:background"
             >
-              {book.volumeInfo.title}
+              {book.volumeInfo.title.length > 40
+                ? `${book.volumeInfo.title.substring(0, 40)}...`
+                : book.volumeInfo.title}{' '}
             </button>
             <button
               type="button"
