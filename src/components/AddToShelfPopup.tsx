@@ -1,15 +1,17 @@
 'use client';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useUserBookshelves } from '@/app/api/supabase';
 import { useAddBookToBookshelf } from '@/app/api/supabase';
 
 interface AddToShelfPopupProps {
   googleBookId: string;
-  handleClose: () => void;
+  handleCloseAction: () => void;
 }
 
-/*getting user bookshleves to display on add popup */
-const BookshelvesList = ({ googleBookId }: { googleBookId: string }) => {
+export default function Popup({
+  googleBookId,
+  handleCloseAction,
+}: AddToShelfPopupProps) {
   const { data: bookshelves, isLoading } = useUserBookshelves();
   const [selectedBookshelfId, setSelectedBookshelfId] = useState<number | null>(
     null,
@@ -29,37 +31,41 @@ const BookshelvesList = ({ googleBookId }: { googleBookId: string }) => {
     [selectedBookshelfId, addBookToBookshelf, googleBookId],
   );
 
-  const addBookButton = (
-    <button onClick={handleAddBook} disabled={isPending}>
-      Add Book to Bookshelf
-    </button>
+  const addBookButton = useMemo(
+    () => (
+      <button onClick={handleAddBook} disabled={isPending}>
+        Add Book to Bookshelf
+      </button>
+    ),
+    [handleAddBook, isPending],
   );
 
-  if (isLoading) return <div>Loading...</div>;
-  return (
-    <ul>
-      {bookshelves?.map((shelf) => (
-        <li key={shelf.bookshelf_id}>
-          <button
-            onClick={() => {
-              setSelectedBookshelfId(shelf.bookshelf_id);
-            }}
-            className="text-2xl text-foreground"
-          >
-            {shelf.bookshelf_name}
-          </button>
-        </li>
-      ))}
-      {/*the add book button only renders if a bookshelf has been clicked */}
-      {selectedBookshelfId && addBookButton}
-    </ul>
+  const bookshelfList = useMemo(
+    () =>
+      isLoading ? (
+        <div>Loading...</div>
+      ) : !bookshelves ? (
+        <div>No bookshelves found.</div>
+      ) : (
+        <ul>
+          {bookshelves?.map((shelf) => (
+            <li key={shelf.bookshelf_id}>
+              <button
+                onClick={() => {
+                  setSelectedBookshelfId(shelf.bookshelf_id);
+                }}
+                className="text-2xl text-foreground"
+              >
+                {shelf.bookshelf_name}
+              </button>
+            </li>
+          ))}
+          {/*the add book button only renders if a bookshelf has been clicked */}
+          {selectedBookshelfId && addBookButton}
+        </ul>
+      ),
+    [addBookButton, bookshelves, isLoading, selectedBookshelfId],
   );
-};
-
-export default function Home({
-  googleBookId,
-  handleClose,
-}: AddToShelfPopupProps) {
   return (
     <div>
       <div className="relative z-10" role="dialog" aria-modal="true">
@@ -75,7 +81,7 @@ export default function Home({
                 <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-1 lg:gap-x-8">
                   <div className="sm:col-span-4 lg:col-span-5 gap-y-8">
                     <button
-                      onClick={handleClose}
+                      onClick={handleCloseAction}
                       className="bg-primary hover:bg-darkPrimary text-background py-2 px-4 rounded-full"
                     >
                       &#8678;
@@ -84,7 +90,7 @@ export default function Home({
                     <h2 className="text-2xl font-bold text-foreground sm:pr-12">
                       Back to Book Details
                     </h2>
-                    <BookshelvesList googleBookId={googleBookId} />
+                    {bookshelfList}
                   </div>
                 </div>
               </div>
