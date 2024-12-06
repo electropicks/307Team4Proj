@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUserId } from './utils';
 import { Book, getBook } from '../google_books/books';
 import { Database } from '@/utils/database.types'; // Adjust the path as needed
-import { getUserBookshelves } from '@/app/api/supabase/bookshelves'; // Adjust the path as needed
 
 type ReadStatus = Database['public']['Enums']['ReadStatus'];
 export enum ReadStatusEnum {
