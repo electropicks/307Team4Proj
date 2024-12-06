@@ -10,7 +10,6 @@ import {
 import BookPopup from '@/components/popup';
 import { Book } from '@/app/api/google_books/books';
 
-
 interface BookToRemove {
   bookshelfId: number;
   bookshelfName: string;
@@ -36,14 +35,12 @@ export default function BookshelvesPanel({
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastColorClass, setToastColorClass] = useState('bg-green-500');
-  const [selectedBook, setSelectedBook] = useState<Book | undefined>();
+  const [selectedBook, setSelectedBook] = useState<Book>();
 
-  
   const handleBookClick = (book: Book) => {
     setSelectedBook(book);
   };
 
-  
   const handleExitPopup = () => {
     setSelectedBook(undefined);
   };
@@ -100,7 +97,9 @@ export default function BookshelvesPanel({
     if (isLoading) return <div>Loading...</div>;
     if (!books || books.length === 0) {
       return (
-        <div className="text-sm text-gray-500 pl-3">No books in this shelf.</div>
+        <div className="text-sm text-gray-500 pl-3">
+          No books in this shelf.
+        </div>
       );
     }
 
@@ -112,11 +111,11 @@ export default function BookshelvesPanel({
             className="flex items-center justify-between space-x-2"
           >
             <button
-                    onClick={() => handleBookClick(book)}
-                    className="mt-1 text-sm text-foreground hover:background"
-                  >
-                    {book.volumeInfo.title}
-                  </button>
+              onClick={() => handleBookClick(book)}
+              className="mt-1 text-sm text-foreground hover:background"
+            >
+              {book.volumeInfo.title}
+            </button>
             <button
               type="button"
               onClick={() =>
@@ -221,22 +220,21 @@ export default function BookshelvesPanel({
         ) : (
           <ul className="space-y-4 pt-4">
             {bookshelves.map((bookshelf) => (
-
-              <div className="mx-auto max-w-2xl py-3 sm:px-3 sm:py-3 lg:max-w-7xl lg:px-8 flex justify-between">
-              <li
+              <div
                 key={bookshelf.bookshelf_id}
-                className="text-gray-700 border-b pb-4"
+                className="mx-auto max-w-2xl py-3 sm:px-3 sm:py-3 lg:max-w-7xl lg:px-8 flex justify-between"
               >
-                <span className="text-2xl font-bold tracking-tight text-accent">
-                  {bookshelf.bookshelf_name}
-                </span>
-                <div className="mt-6 flex gap-x-6 gap-y-10 overflow-hidden">
-                  <BooksInBookshelf
-                    bookshelfId={bookshelf.bookshelf_id}
-                    bookshelfName={bookshelf.bookshelf_name}
-                  />
-                </div>
-              </li>
+                <li className="text-gray-700 border-b pb-4">
+                  <span className="text-2xl font-bold tracking-tight text-accent">
+                    {bookshelf.bookshelf_name}
+                  </span>
+                  <div className="mt-6 flex gap-x-6 gap-y-10 overflow-hidden">
+                    <BooksInBookshelf
+                      bookshelfId={bookshelf.bookshelf_id}
+                      bookshelfName={bookshelf.bookshelf_name}
+                    />
+                  </div>
+                </li>
               </div>
             ))}
           </ul>
