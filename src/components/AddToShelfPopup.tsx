@@ -1,111 +1,101 @@
 'use client';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useUserBookshelves } from '@/app/api/supabase';
 import { useAddBookToBookshelf } from '@/app/api/supabase';
 
 interface AddToShelfPopupProps {
   googleBookId: string;
-  handleClose: () => void;
+  handleCloseAction: () => void;
 }
 
-/*getting user bookshleves to display on add popup */
-const BookshelvesList = ({ googleBookId }: { googleBookId: string }) => {
+export default function AddToShelfPopup({
+  googleBookId,
+  handleCloseAction,
+}: AddToShelfPopupProps) {
   const { data: bookshelves, isLoading } = useUserBookshelves();
   const [selectedBookshelfId, setSelectedBookshelfId] = useState<number | null>(
     null,
   );
-  if (isLoading) return <div>Loading...</div>;
-  return (
-    <div>
-      <ul>
-        {bookshelves?.map((shelf) => (
-          <li key={shelf.bookshelf_id}>
-            <button
-              onClick={() => {
-                setSelectedBookshelfId(shelf.bookshelf_id);
-              }}
-              className="text-2xl text-foreground"
-            >
-              {shelf.bookshelf_name}
-            </button>
-          </li>
-        ))}
-      </ul>
-      {/*the add book button only renders if a bookshelf has been clicked */}
-      {selectedBookshelfId && (
-        <AddBookButton
-          bookshelfId={selectedBookshelfId}
-          googleBookId={googleBookId}
-        />
-      )}
-    </div>
-  );
-};
-/*adding book to bookshelf */
-const AddBookButton = ({
-  bookshelfId,
-  googleBookId,
-}: {
-  bookshelfId: number;
-  googleBookId: string;
-}) => {
-  console.log('AddBookButton rendered');
   const { mutate: addBookToBookshelf, isPending } = useAddBookToBookshelf();
-  const handleAddBook = () => {
-    addBookToBookshelf(
-      { bookshelfId, googleBookId },
-      {
-        onSuccess: () => {
-          console.log('Book added to bookshelf!');
+  const handleAddBook = useCallback(
+    () =>
+      selectedBookshelfId &&
+      addBookToBookshelf(
+        { bookshelfId: selectedBookshelfId, googleBookId },
+        {
+          onSuccess: () => {
+            console.log('Book added to bookshelf!');
+          },
         },
-        onError: (error) => {
-          console.error('Error adding book:', error);
-        },
-      },
-    );
-  };
-  return (
-    <button onClick={handleAddBook} disabled={isPending}>
-      Add Book to Bookshelf
-    </button>
+      ),
+    [selectedBookshelfId, addBookToBookshelf, googleBookId],
   );
-};
 
-export default function Home({
-  googleBookId,
-  handleClose,
-}: AddToShelfPopupProps) {
+  const addBookButton = useMemo(
+    () => (
+      <button
+        onClick={handleAddBook}
+        disabled={isPending}
+        className="mt-4 px-4 py-2 bg-primary text-foreground rounded border border-gray-300 hover:bg-primary-dark"
+      >
+        Add Book to Bookshelf
+      </button>
+    ),
+    [handleAddBook, isPending],
+  );
+
+  const bookshelfList = useMemo(
+    () =>
+      isLoading ? (
+        <div>Loading...</div>
+      ) : !bookshelves ? (
+        <div>No bookshelves found.</div>
+      ) : (
+        <ul>
+          {bookshelves?.map((shelf) => (
+            <li key={shelf.bookshelf_id} className="mb-2">
+              <button
+                onClick={() => {
+                  setSelectedBookshelfId(shelf.bookshelf_id);
+                }}
+                className="w-full px-4 py-2 bg-secondary text-foreground rounded border border-gray-300 hover:bg-secondary-dark"
+              >
+                {shelf.bookshelf_name}
+              </button>
+            </li>
+          ))}
+          {selectedBookshelfId && addBookButton}
+        </ul>
+      ),
+    [addBookButton, bookshelves, isLoading, selectedBookshelfId],
+  );
+
   return (
-    <div>
-      <div className="relative z-10" role="dialog" aria-modal="true">
-        <div
-          className="fixed inset-0 hidden bg-gray-500/75 transition-opacity md:block"
-          aria-hidden="true"
-        ></div>
-
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-1/2 items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
-            <div className="flex w-1/2 transform text-left text-base transition md:my-8 md:max-w-2xl md:px-4 lg:max-w-4xl">
-              <div className="relative flex w-full items-center overflow-hidden bg-background px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
-                <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-1 lg:gap-x-8">
-                  <div className="sm:col-span-4 lg:col-span-5 gap-y-8">
-                    <button
-                      onClick={handleClose}
-                      className="bg-primary hover:bg-darkPrimary text-background py-2 px-4 rounded-full"
-                    >
-                      &#8678;
-                    </button>
-
-                    <h2 className="text-2xl font-bold text-foreground sm:pr-12">
-                      Back to Book Details
-                    </h2>
-                    <BookshelvesList googleBookId={googleBookId} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/75">
+      <div className="relative bg-background rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
+        <button
+          onClick={handleCloseAction}
+          className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 focus:outline-none"
+          aria-label="Close popup"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <h2 className="text-2xl font-bold text-foreground sm:pr-12">
+          Back to Book Details
+        </h2>
+        {bookshelfList}
       </div>
     </div>
   );
