@@ -1,10 +1,22 @@
 # GreatReads
 
+## The Project
+
+The purpose of this project is to provide users with a way to track and organize their reading habits. This project focuses on the individual user and their personal reading experience. Users are able to create their own accounts, search for books and organize bookshelves of books. The search capability can search for thousands of books and users can add any book to their bookshelves. With each search result they can interact with books and view their information, including the author and a description of the book. A user can mark a book as read or unread, add personal notes about the book, and add or remove books to and from their shelves.
+
+## UI Prototype
+[Figma design](https://www.figma.com/proto/qOQembiYzIe3g3mNLo4mfc/GreatReads?node-id=9-93&node-type=canvas&t=wKYz9QlopHNVvFKZ-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=9%3A172&show-proto-sidebar=1)
+*Last updated: November 23, 2024*
+
+
+## Architecture Documentation
+[Documentation folder](docs)
+
+## Development Environment
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-The purpose of this project is to provide users with a way to track and organize their reading habits. This project focuses on individual user and their experience with their books. The user is able to create their own account and bookshelves of books that are linked to their account. They are able to search for over thousands of books and add them to their shelves. With each book result they can press a button and get information including the author and a description of the book. Once that book is added to a shelf the user can mark it as read or unread, add notes about the book, and remove the book from their shelf.
-
-## Getting Started
+### Getting Started
 
 First, run the development server:
 
@@ -18,9 +30,6 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Figma Design
-[https://www.figma.com/proto/qOQembiYzIe3g3mNLo4mfc/GreatReads?node-id=9-93&node-type=canvas&t=wKYz9QlopHNVvFKZ-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=9%3A172&show-proto-sidebar=1]
-
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -30,7 +39,7 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+### Deploying on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
