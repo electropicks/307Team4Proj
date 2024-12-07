@@ -2,7 +2,7 @@
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-The purpose of this project is to provide users with a with a way to track and organize their reading habits. This project focuses on individual user and their experience with their books. The user is able to create their own account and bookshelves of books that are linked to their account. They are able to search for over thousands of books and add them to their shelves. With each book result they can press a button and get information including the author and a description of the book. Once that book is added to a shelf the user can mark it as read or unread, add notes about the book, and remove the book from their shelf.
+The purpose of this project is to provide users with a way to track and organize their reading habits. This project focuses on individual user and their experience with their books. The user is able to create their own account and bookshelves of books that are linked to their account. They are able to search for over thousands of books and add them to their shelves. With each book result they can press a button and get information including the author and a description of the book. Once that book is added to a shelf the user can mark it as read or unread, add notes about the book, and remove the book from their shelf.
 
 ## Getting Started
 
