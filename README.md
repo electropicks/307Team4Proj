@@ -10,7 +10,7 @@ The purpose of this project is to provide users with a way to track and organize
 
 
 ## Architecture Documentation
-[Documentation folder](docs)
+[Architecture document](docs/ARCHITECTURE.md)
 
 ## Development Environment
 
@@ -29,6 +29,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+#### Contributing
+
+[Contributing documentation](docs/CONTRIBUTING.md)
+
+[Backend API documentation](docs/BACKEND_USAGE.md)
 
 ## Learn More
 
