@@ -8,7 +8,6 @@ The purpose of this project is to provide users with a way to track and organize
 [Figma design](https://www.figma.com/proto/qOQembiYzIe3g3mNLo4mfc/GreatReads?node-id=9-93&node-type=canvas&t=wKYz9QlopHNVvFKZ-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=9%3A172&show-proto-sidebar=1)
 *Last updated: November 23, 2024*
 
-
 ## Architecture Documentation
 [Architecture document](docs/ARCHITECTURE.md)
 
@@ -21,7 +20,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, run the development server:
 
 ```bash
-next dev
+    npm install
+    npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -30,7 +30,15 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-#### Contributing
+#### Syncing Supabase Types with Database Schema
+Having run `npm install` and logged in to Supabase on your default browser, run the following commands:
+```bash
+    supabase login
+    supabase link # Follow CLI instructions and select GreatReadsWebApp
+    supabase gen types typescript --linked --schema=public > src/utils/database.types.ts  
+```
+
+### Contributing
 
 [Contributing documentation](docs/CONTRIBUTING.md)
 
